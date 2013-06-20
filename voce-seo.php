@@ -61,40 +61,42 @@ class VSEO {
 				return $output;
 			} );
 		
-		add_filter( 'wp_title', function($title, $sep, $seplocation) {
-			$new_title = '';
-			$t_sep = '%WP_TITILE_SEP%';
-			$queried_object = get_queried_object();
+		add_filter( 'wp_title', array( __CLASS__, 'seo_title' ), 10, 3);
 
-			if($queried_object && get_post_type($queried_object)) {
-				$post_id = get_queried_object_id();
-				$vseo_meta = (array) get_post_meta($post_id, 'vseo_meta', true);
-				
-				$post_title = empty($vseo_meta['title']) ? get_the_title($post_id) : $vseo_meta['title'];
-				
-				$new_title = apply_filters('single_post_title', $post_title, $queried_object);
-			}
-			if ( !empty( $new_title ) ) {
-				$title = $new_title;
-
-				if ( !empty( $title ) )
-					$prefix = " $sep ";
-
-				// Determines position of the separator and direction of the breadcrumb
-				if ( 'right' == $seplocation ) { // sep on right, so reverse the order
-					$title_array = explode( $t_sep, $title );
-					$title_array = array_reverse( $title_array );
-					$title = implode( " $sep ", $title_array ) . $prefix;
-				} else {
-					$title_array = explode( $t_sep, $title );
-					$title = $prefix . implode( " $sep ", $title_array );
-				}
-			}
-				
-			return $title;
-		}, 10, 3);
-		
 		add_action('wp_head', array(__CLASS__, 'on_wp_head'));
+	}
+
+	static function seo_title($title, $sep, $seplocation) {
+		$new_title = '';
+		$t_sep = '%WP_TITILE_SEP%';
+		$queried_object = get_queried_object();
+
+		if($queried_object && get_post_type($queried_object)) {
+			$post_id = get_queried_object_id();
+			$vseo_meta = (array) get_post_meta($post_id, 'vseo_meta', true);
+
+			$post_title = empty($vseo_meta['title']) ? get_the_title($post_id) : $vseo_meta['title'];
+
+			$new_title = apply_filters('single_post_title', $post_title, $queried_object);
+		}
+		if ( !empty( $new_title ) ) {
+			$title = $new_title;
+
+			if ( !empty( $title ) )
+				$prefix = " $sep ";
+
+			// Determines position of the separator and direction of the breadcrumb
+			if ( 'right' == $seplocation ) { // sep on right, so reverse the order
+				$title_array = explode( $t_sep, $title );
+				$title_array = array_reverse( $title_array );
+				$title = implode( " $sep ", $title_array ) . $prefix;
+			} else {
+				$title_array = explode( $t_sep, $title );
+				$title = $prefix . implode( " $sep ", $title_array );
+			}
+		}
+
+		return $title;
 	}
 	
 	private static function upgrade_check() {
@@ -109,9 +111,11 @@ class VSEO {
 	
 	public static function on_wp_head() {
 		$queried_object = get_queried_object();
-		
+
+		do_action( 'voce_seo_before_wp_head' );
+
 		echo "<!-- voce_seo -->\n";
-		if($canonical = self::get_cononical_url()) {
+		if($canonical = self::get_canonical_url()) {
 			printf('<link rel="canonical" href="%s" />'.chr(10), esc_url($canonical));
 			printf('<meta name="twitter:url" content="%s" />'.chr(10), esc_attr($canonical));
 			printf('<meta property="og:url" content="%s" />'.chr(10), esc_attr($canonical));
@@ -133,9 +137,11 @@ class VSEO {
 			}
 			
 		}
-		
+
+		remove_filter( 'wp_title', array( __CLASS__, 'seo_title' ), 10, 3);
 		printf('<meta property="og:title" content="%s" />'.chr(10), esc_attr(trim(wp_title('', false))));
 		printf('<meta name="twitter:title" content="%s" />'.chr(10), esc_attr(trim(wp_title('', false))));
+		add_filter( 'wp_title', array( __CLASS__, 'seo_title' ), 10, 3);
 
 		printf('<meta property="og:type" content="%s"/>'.chr(10), apply_filters('vseo_ogtype', 'article'));
 		printf('<meta name="twitter:card" content="%s" />'.chr(10), apply_filters('vseo_ogtype', 'summary'));
@@ -146,6 +152,8 @@ class VSEO {
 			printf('<meta property="og:image" content="%s" />'.chr(10), esc_attr($image));
 		}
 		echo '<!-- end voce_seo -->';
+
+		do_action( 'voce_seo_after_wp_head' );
 	}
 	
 	public static function get_seo_meta($key, $post_id = 0) {
@@ -200,14 +208,14 @@ class VSEO {
 
 		$queried_object = get_queried_object();
 		
-		$robots = array(
+		$robots_defaults = array(
 			'index'  => 'index',
 			'follow' => 'follow',
 			'other' => array(),
 		);
 		
 		//use this to replace the defaults, these values will be overwritten by post meta if set
-		$robots = apply_filters('vseo_robots_defaults', $robots);
+		$robots = apply_filters('vseo_robots_defaults', $robots_defaults);
 
 		if ( isset($queried_object->post_type) ) {
 			if ( $follow = self::get_seo_meta('robots-nofollow', get_queried_object_id()) ) {
@@ -230,20 +238,22 @@ class VSEO {
 
 		//final filter to force values
 		$robots = apply_filters('vseo_robots', $robots);
-		
-		$robotsstr = $robots['index'] . ',' . $robots['follow'];
+		$robots = array_intersect_key($robots, $robots_defaults);
 
-		$robots['other'] = array_unique( $robots['other'] );
-		foreach ( $robots['other'] as $robot ) {
-			$robotsstr .= ',' . $robot;
+		if ( isset($robots['other']) && is_array($robots['other']) ) {
+			$other = array_unique( $robots['other'] );
+			unset( $robots['other'] );
+			$robots = array_merge($robots, $other);
 		}
 
+		$robotsstr = implode(',', $robots );
+
 		if ( $robotsstr != '' ) {
-			echo '<meta name="robots" content="' . $robotsstr . '"/>' . "\n";
+			echo '<meta name="robots" content="' . esc_attr( $robotsstr ) . '"/>' . "\n";
 		}
 	}
 	
-	private static function get_cononical_url() {
+	private static function get_canonical_url() {
 		global $wp_rewrite;
 		$queried_object = get_queried_object();
 		
