@@ -237,17 +237,27 @@ class VSEO {
 		}
 
 		//final filter to force values
-		$robots = apply_filters('vseo_robots', $robots);
-		
-		$robotsstr = $robots['index'] . ',' . $robots['follow'];
+		$robots    = apply_filters('vseo_robots', $robots);
+		$robotsstr = '';
+		$separator = '';
+
+		if ( isset($robots['index']) && $robots['index'] ) {
+			$robotsstr .= $robots['index'];
+			$separator = ',';
+		}
+		if ( isset($robots['follow']) && $robots['follow'] ) {
+			$robotsstr .= $separator . $robots['follow'];
+			$separator = ',';
+		}		
 
 		$robots['other'] = array_unique( $robots['other'] );
 		foreach ( $robots['other'] as $robot ) {
-			$robotsstr .= ',' . $robot;
+			$robotsstr .= $separator . $robot;
+			$separator = ',';
 		}
 
 		if ( $robotsstr != '' ) {
-			echo '<meta name="robots" content="' . $robotsstr . '"/>' . "\n";
+			echo '<meta name="robots" content="' . esc_attr( $robotsstr ) . '"/>' . "\n";
 		}
 	}
 	
