@@ -208,14 +208,14 @@ class VSEO {
 
 		$queried_object = get_queried_object();
 		
-		$robots = array(
+		$robots_defaults = array(
 			'index'  => 'index',
 			'follow' => 'follow',
 			'other' => array(),
 		);
 		
 		//use this to replace the defaults, these values will be overwritten by post meta if set
-		$robots = apply_filters('vseo_robots_defaults', $robots);
+		$robots = apply_filters('vseo_robots_defaults', $robots_defaults);
 
 		if ( isset($queried_object->post_type) ) {
 			if ( $follow = self::get_seo_meta('robots-nofollow', get_queried_object_id()) ) {
@@ -238,6 +238,7 @@ class VSEO {
 
 		//final filter to force values
 		$robots = apply_filters('vseo_robots', $robots);
+		$robots = array_intersect_key($robots, $robots_defaults);
 
 		if ( isset($robots['other']) && is_array($robots['other']) ) {
 			$other = array_unique( $robots['other'] );
