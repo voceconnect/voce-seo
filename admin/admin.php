@@ -3,10 +3,7 @@
 class VSEO_Admin {
 	public static function init() {
 		require_once(__DIR__ . '/field-callbacks.php');
-		VSEO_Metabox::init();
-		
-		
-		
+		VSEO_Metabox::init();		
 	}
 }
 

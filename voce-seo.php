@@ -1,10 +1,11 @@
 <?php
-
-/**
- * An SEO plugin taking things from both WP SEO and All in One SEO
- * but leaving out the VIP incompatible pieces.
- * @author Michael Pretty (prettyboymp)
- * @version 0.1
+/*
+  Plugin Name: Lift Search
+  Version: 0.1.0
+  Plugin URI: http://getliftsearch.com/
+  Description: An SEO plugin taking things from both WP SEO and All in One SEO but leaving out the VIP incompatible pieces.
+  Author: Voce Platforms
+  Author URI: http://voceconnect.com/
  */
 
 class VSEO {
