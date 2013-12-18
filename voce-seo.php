@@ -1,8 +1,8 @@
 <?php
 /*
-  Plugin Name: Lift Search
+  Plugin Name: Voce SEO
   Version: 0.1.0
-  Plugin URI: http://getliftsearch.com/
+  Plugin URI: http://voceconnect.com/
   Description: An SEO plugin taking things from both WP SEO and All in One SEO but leaving out the VIP incompatible pieces.
   Author: Voce Platforms
   Author URI: http://voceconnect.com/
