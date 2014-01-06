@@ -14,6 +14,8 @@ Adds filterable SEO and Social fields to all publicly queryable post types and a
 to improve discoverability.
 
 == Changelog ==
+= Version 0.1.1 =
+* Changing name of version constants.
 
 = Version 0.1.0 =
 * Initial release

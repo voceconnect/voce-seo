@@ -10,7 +10,7 @@
 
 class VSEO {
 	
-	const VERSION = '0.1';
+	const DB_VERSION = '0.1.1';
 	
 	public static function init() {
 		
@@ -101,13 +101,13 @@ class VSEO {
 	}
 	
 	private static function upgrade_check() {
-		$current_version = get_option('VSEO_Version', '0.0');
-		if($current_version < 0.1) {
+		$db_version = get_option('VSEO_Version', '0.0');
+		if($db_version < 0.1) {
 			Voce_Settings_API::GetInstance()->set_setting('robots-nodp', 'vseo-general', true);
 			Voce_Settings_API::GetInstance()->set_setting('robots-noydir', 'vseo-general', true);
 		}
 		
-		update_option('VSEO_Version', self::VERSION);
+		update_option('VSEO_Version', self::DB_VERSION);
 	}
 	
 	public static function on_wp_head() {
