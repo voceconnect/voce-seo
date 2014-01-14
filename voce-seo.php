@@ -14,7 +14,7 @@ class VSEO {
 	
 	public static function init() {
 		
-		voce_load_plugin('voce-settings-api');
+		@include( sdirname(__FILE__) . '/vendor/autoload.php' );
 		
 		self::upgrade_check();
 		

@@ -1,0 +1,17 @@
+{
+	"name": "voceconnect/voce-seo",
+	"type": "wordpress-plugin",
+	"license": "GPLv2+",
+    "authors": [
+        {
+            "name": "Michael Pretty",
+            "email": "mpretty@voceconnect.com"
+        }
+    ],
+    "config": {
+        "vendor-dir": "vendor"
+    },
+    "require": {
+        "voceconnect/voce-settings-api": "~0.4"
+    }
+}
