@@ -1,7 +1,7 @@
 <?php
 /*
   Plugin Name: Voce SEO
-  Version: 0.1.0
+  Version: 0.2.0
   Plugin URI: http://voceconnect.com/
   Description: An SEO plugin taking things from both WP SEO and All in One SEO but leaving out the VIP incompatible pieces.
   Author: Voce Platforms
@@ -14,8 +14,8 @@ class VSEO {
 	
 	public static function init() {
 		
-		@include( sdirname(__FILE__) . '/vendor/autoload.php' );
-		
+		@include( dirname(__FILE__) . '/vendor/autoload.php' );
+
 		self::upgrade_check();
 		
 		if(  is_admin() ) {
