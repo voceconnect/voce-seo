@@ -3,22 +3,22 @@
 class VSEO_Admin {
 	public static function init() {
 		require_once(__DIR__ . '/field-callbacks.php');
-		VSEO_Metabox::init();		
+		VSEO_Metabox::init();
 	}
 }
 
 class VSEO_Metabox {
 	public static function init() {
 		add_action('add_meta_boxes', function($post_type) {
-				if(get_post_type_object($post_type)->publicly_queryable) {
-					add_meta_box('vseo_meta', 'SEO Settings', array( 'VSEO_Metabox', 'meta_box' ), 
+				if(get_post_type_object($post_type)->publicly_queryable || $post_type == 'page') {
+					add_meta_box('vseo_meta', 'SEO Settings', array( 'VSEO_Metabox', 'meta_box' ),
 						$post_type, 'normal');
 				}
 		});
-		
+
 		add_action('save_post', array(__CLASS__, 'on_save_post'));
 	}
-	
+
 	public static function meta_box($post) {
 		$post_type = get_post_type($post);
 		$tabs = self::get_metabox_tabs($post_type);
@@ -26,7 +26,7 @@ class VSEO_Metabox {
 		?>
 		<div class="vseo-metabox-tabs-div">
 			<ul class="vseo-metabox-tabs" id="vseo-metabox-tabs">
-				<?php 
+				<?php
 				foreach($tabs as $tab_id => $tab) {
 					sprintf('<li class="vseo-%1$s"><a class="vseo_tablink" href="#vseo_%1$s">%2$s</a></li>',
 						$tab_id, esc_html($tab['label']));
@@ -48,10 +48,10 @@ class VSEO_Metabox {
 				</div>
 			<?php endforeach; ?>
 		</div>
-		<?php	
+		<?php
 		wp_nonce_field('vseo_update_meta', 'vseo_nonce');
 	}
-	
+
 	public static function on_save_post($post_id) {
 		if(wp_is_post_autosave($post_id) || wp_is_post_revision($post_id)) {
 			return $post_id;
@@ -60,7 +60,7 @@ class VSEO_Metabox {
 			$post_type = get_post_type($post_id);
 			$tabs = self::get_metabox_tabs($post_type);
 			$vseo_meta = (array) get_post_meta( $post_id, 'vseo_meta', true );
-			
+
 			foreach($tabs as $tab_id => $tab) {
 				foreach(self::get_metabox_fields($tab_id, $post_type) as $field_id => $field) {
 					if(isset($field['sanitize_callback'])) {
@@ -74,22 +74,22 @@ class VSEO_Metabox {
 			update_post_meta($post_id, 'vseo_meta', $vseo_meta);
 		}
 	}
-	
+
 	private function get_metabox_tabs($post_type) {
 		$metabox_tabs = array(
 			'general' => array(
 				'label' => 'General'
-			), 
+			),
 			'advanced' => array(
 				'label' => 'Advanced'
-			), 
+			),
 			'social' => array(
 				'label' => 'Social'
 			)
 		);
 		return apply_filters('vseo_metabox_tabs', $metabox_tabs, $post_type);
 	}
-	
+
 	private function get_metabox_fields($tab, $post_type) {
 		$tab_fields = array(
 			'general' => array(
@@ -153,7 +153,7 @@ class VSEO_Metabox {
 					),
 					"title" => "301 Redirect URL",
 				),
-				
+
 			),
 			'social' => array(
 				'og_description' => array(
@@ -164,14 +164,14 @@ class VSEO_Metabox {
 					),
 					"title" => "Facebook Description",
 				),
-				
+
 			),
 		);
-		
-		return apply_filters('vseo_metabox_fields', isset($tab_fields[$tab]) ? 
+
+		return apply_filters('vseo_metabox_fields', isset($tab_fields[$tab]) ?
 			$tab_fields[$tab] : array(), $tab, $post_type);
-		
+
 	}
-	
-	
+
+
 }

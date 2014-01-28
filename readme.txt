@@ -14,6 +14,10 @@ Adds filterable SEO and Social fields to all publicly queryable post types and a
 to improve discoverability.
 
 == Changelog ==
+= Version 0.2.1 =
+* Adding metabox to the page post type as well as publicly_queryable post types. 
+* Had to include page manually since it is not set as publicly queryable by default.
+
 = Version 0.2.0 =
 * Adding composer/dependencies
 
