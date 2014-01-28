@@ -1,7 +1,7 @@
 <?php
 /*
   Plugin Name: Voce SEO
-  Version: 0.2.0
+  Version: 0.2.1
   Plugin URI: http://voceconnect.com/
   Description: An SEO plugin taking things from both WP SEO and All in One SEO but leaving out the VIP incompatible pieces.
   Author: Voce Platforms
@@ -9,20 +9,20 @@
  */
 
 class VSEO {
-	
+
 	const DB_VERSION = '0.1.1';
-	
+
 	public static function init() {
-		
+
 		@include( dirname(__FILE__) . '/vendor/autoload.php' );
 
 		self::upgrade_check();
-		
+
 		if(  is_admin() ) {
 			require_once (__DIR__ . '/admin/admin.php');
 			VSEO_Admin::init();
 		}
-		
+
 		Voce_Settings_API::GetInstance()
 			->add_page('SEO Settings', 'SEO Settings', 'vseo', 'manage_options', '', 'options-general.php')
 				->add_group('General', 'vseo-general')
@@ -36,9 +36,9 @@ class VSEO {
 						'sanitize_callbacks' => array('vs_sanitize_checkbox'),
 						'description' => 'Prevents search engines from using the Yahoo! directory description for pages from this site in the search results.'
 						));
-		
+
 		remove_action( 'wp_head', 'rel_canonical' );
-		
+
 		//add namespaces
 		add_filter( 'language_attributes', function($output ) {
 				$prefixes = array(
@@ -61,7 +61,7 @@ class VSEO {
 				}
 				return $output;
 			} );
-		
+
 		add_filter( 'wp_title', array( __CLASS__, 'seo_title' ), 10, 3);
 
 		add_action('wp_head', array(__CLASS__, 'on_wp_head'));
@@ -99,17 +99,17 @@ class VSEO {
 
 		return $title;
 	}
-	
+
 	private static function upgrade_check() {
 		$db_version = get_option('VSEO_Version', '0.0');
 		if($db_version < 0.1) {
 			Voce_Settings_API::GetInstance()->set_setting('robots-nodp', 'vseo-general', true);
 			Voce_Settings_API::GetInstance()->set_setting('robots-noydir', 'vseo-general', true);
 		}
-		
+
 		update_option('VSEO_Version', self::DB_VERSION);
 	}
-	
+
 	public static function on_wp_head() {
 		$queried_object = get_queried_object();
 
@@ -121,22 +121,22 @@ class VSEO {
 			printf('<meta name="twitter:url" content="%s" />'.chr(10), esc_attr($canonical));
 			printf('<meta property="og:url" content="%s" />'.chr(10), esc_attr($canonical));
 		}
-		
+
 		printf('<meta property="og:site_name" content="%s"/>', esc_attr(get_bloginfo( 'name' )));
 		echo '<meta property="og:locale" content="en_us"/>';
 
 		self::robots_meta();
-		
+
 		if($description = self::get_meta_description() ) {
 			printf('<meta name="description" content="%s" />'.chr(10), esc_attr($description));
 		}
-		
+
 		if ( isset( $queried_object->post_type ) ) {
 			if ( $og_description = self::get_seo_meta( 'og_description', get_queried_object_id() ) ) {
 				printf( '<meta property="og:description" content="%s" />' . chr( 10 ), $og_description );
 				printf('<meta name="twitter:description" content="%s" />'.chr(10), esc_attr($og_description));
 			}
-			
+
 		}
 
 		remove_filter( 'wp_title', array( __CLASS__, 'seo_title' ), 10, 3);
@@ -147,7 +147,7 @@ class VSEO {
 		printf('<meta property="og:type" content="%s"/>'.chr(10), apply_filters('vseo_ogtype', 'article'));
 		printf('<meta name="twitter:card" content="%s" />'.chr(10), apply_filters('vseo_ogtype', 'summary'));
 
-		
+
 		if($image = self::get_meta_image()) {
 			printf('<meta name="twitter:image" content="%s" />'.chr(10), esc_attr($image));
 			printf('<meta property="og:image" content="%s" />'.chr(10), esc_attr($image));
@@ -156,23 +156,23 @@ class VSEO {
 
 		do_action( 'voce_seo_after_wp_head' );
 	}
-	
+
 	public static function get_seo_meta($key, $post_id = 0) {
 		if(!$post_id) $post_id = get_the_ID ( );
-		
+
 		$vseo_meta = (array) get_post_meta($post_id, 'vseo_meta', true);
-		
+
 		return isset($vseo_meta[$key]) ? $vseo_meta[$key] : null;
 	}
-	
+
 	public static function get_meta_description() {
 		if ( get_query_var( 'paged' ) && get_query_var( 'paged' ) > 1 )
 			return '';
-		
+
 		$description = '';
 
 		$queried_object = get_queried_object();
-		
+
 		if ( isset($queried_object->post_type) ) {
 			if(!($description = self::get_seo_meta( 'description', get_queried_object_id()))) {
 				//get description from excerpt/content
@@ -203,18 +203,18 @@ class VSEO {
 
 		return strip_tags( stripslashes( $description ) );
 	}
-	
+
 	private static function robots_meta() {
 		global $wp_query;
 
 		$queried_object = get_queried_object();
-		
+
 		$robots_defaults = array(
 			'index'  => 'index',
 			'follow' => 'follow',
 			'other' => array(),
 		);
-		
+
 		//use this to replace the defaults, these values will be overwritten by post meta if set
 		$robots = apply_filters('vseo_robots_defaults', $robots_defaults);
 
@@ -228,7 +228,7 @@ class VSEO {
 		} else {
 			if ( is_search() || is_archive() ) {
 				$robots['index'] = 'noindex';
-			} 
+			}
 		}
 
 		foreach ( array( 'nodp', 'noydir' ) as $robot ) {
@@ -253,13 +253,13 @@ class VSEO {
 			echo '<meta name="robots" content="' . esc_attr( $robotsstr ) . '"/>' . "\n";
 		}
 	}
-	
+
 	private static function get_canonical_url() {
 		global $wp_rewrite;
 		$queried_object = get_queried_object();
-		
+
 		$canonical = '';
-		
+
 		if ( isset($queried_object->post_type) ) {
 			if ( !($canonical = self::get_seo_meta( 'canonical', get_queried_object_id() ) ) || is_null( $canonical ) ) {
 				$canonical = get_permalink( $queried_object->ID );
@@ -301,19 +301,19 @@ class VSEO {
 		return apply_filters( 'vseo_canonical_url', $canonical );
 
 	}
-	
+
 	private static function get_meta_image() {
 		$queried_object = get_queried_object();
-		
+
 		$img = '';
-		
+
 		if ( isset($queried_object->post_type) ) {
 			if(  has_post_thumbnail( get_queried_object_id() )) {
 				$img = wp_get_attachment_image_src(get_post_thumbnail_id( get_queried_object_id(), 'medium'));
 				$img = $img[0];
 			}
 		}
-		
+
 		return apply_filters('vseo_meta_image', $img);
 	}
 }
