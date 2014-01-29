@@ -1,7 +1,7 @@
 <?php
 /*
   Plugin Name: Voce SEO
-  Version: 0.2.1
+  Version: 0.2.2
   Plugin URI: http://voceconnect.com/
   Description: An SEO plugin taking things from both WP SEO and All in One SEO but leaving out the VIP incompatible pieces.
   Author: Voce Platforms
@@ -67,19 +67,30 @@ class VSEO {
 		add_action('wp_head', array(__CLASS__, 'on_wp_head'));
 	}
 
-	static function seo_title($title, $sep, $seplocation) {
-		$new_title = '';
-		$t_sep = '%WP_TITILE_SEP%';
-		$queried_object = get_queried_object();
+	static function seo_title( $title, $sep, $seplocation ) {
+		$new_title         = '';
+		$t_sep             = '%WP_TITILE_SEP%';
+		$queried_object    = get_queried_object();
+		$queried_post_type = get_post_type_object( get_post_type( $queried_object ) );
 
-		if($queried_object && get_post_type($queried_object)) {
-			$post_id = get_queried_object_id();
-			$vseo_meta = (array) get_post_meta($post_id, 'vseo_meta', true);
+		if (
+			is_single() &&
+			$queried_object &&
+			is_object( $queried_post_type ) &&
+			$queried_post_type->publicly_queryable
+		) {
 
-			$post_title = empty($vseo_meta['title']) ? get_the_title($post_id) : $vseo_meta['title'];
+			$post_id   = get_queried_object_id();
+			$vseo_meta = (array) get_post_meta( $post_id, 'vseo_meta', true );
 
-			$new_title = apply_filters('single_post_title', $post_title, $queried_object);
+			if ( ! empty( $vseo_meta['title'] ) ) {
+
+				$new_title = apply_filters( 'single_post_title', $vseo_meta['title'], $queried_object );
+
+			}
+
 		}
+
 		if ( !empty( $new_title ) ) {
 			$title = $new_title;
 
