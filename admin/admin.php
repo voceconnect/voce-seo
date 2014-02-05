@@ -12,9 +12,9 @@ class VSEO_Metabox {
 		add_action('add_meta_boxes', function($post_type) {
 				if(get_post_type_object($post_type)->publicly_queryable || $post_type == 'page') {
 					add_meta_box('vseo_meta', 'SEO Settings', array( 'VSEO_Metabox', 'meta_box' ),
-						$post_type, 'normal');
+						$post_type, 'advanced');
 				}
-		});
+		}, 99 );
 
 		add_action('save_post', array(__CLASS__, 'on_save_post'));
 	}
