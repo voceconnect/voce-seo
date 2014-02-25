@@ -1,7 +1,7 @@
 <?php
 /*
   Plugin Name: Voce SEO
-  Version: 0.2.3
+  Version: 0.2.4
   Plugin URI: http://voceconnect.com/
   Description: An SEO plugin taking things from both WP SEO and All in One SEO but leaving out the VIP incompatible pieces.
   Author: Voce Platforms
@@ -150,10 +150,8 @@ class VSEO {
 
 		}
 
-		remove_filter( 'wp_title', array( __CLASS__, 'seo_title' ), 10, 3);
-		printf('<meta property="og:title" content="%s" />'.chr(10), esc_attr(trim(wp_title('', false))));
-		printf('<meta name="twitter:title" content="%s" />'.chr(10), esc_attr(trim(wp_title('', false))));
-		add_filter( 'wp_title', array( __CLASS__, 'seo_title' ), 10, 3);
+		printf('<meta property="og:title" content="%s" />'.chr(10), esc_attr(self::get_ogtitle()));
+		printf('<meta name="twitter:title" content="%s" />'.chr(10), esc_attr(self::get_ogtitle()));
 
 		printf('<meta property="og:type" content="%s"/>'.chr(10), apply_filters('vseo_ogtype', 'article'));
 		printf('<meta name="twitter:card" content="%s" />'.chr(10), apply_filters('vseo_ogtype', 'summary'));
@@ -166,6 +164,22 @@ class VSEO {
 		echo '<!-- end voce_seo -->';
 
 		do_action( 'voce_seo_after_wp_head' );
+	}
+
+	public static function get_ogtitle() {
+		if ( is_home() || is_front_page() ) {
+			$title = get_bloginfo( 'name' );
+		} else if ( is_author() ) {
+			$author = get_queried_object();
+			$title = $author->display_name;
+		} else if ( is_singular() ) {
+			global $post;
+			$title = empty( $post->post_title ) ? ' ' : wp_kses( $post->post_title, array() ) ;
+		} else {
+			$title = '';
+		}
+
+		return apply_filters( 'vseo_ogtitle', $title );
 	}
 
 	public static function get_seo_meta($key, $post_id = 0) {
