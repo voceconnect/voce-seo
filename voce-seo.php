@@ -154,7 +154,7 @@ class VSEO {
 		printf('<meta name="twitter:title" content="%s" />'.chr(10), esc_attr(self::get_ogtitle()));
 
 		printf('<meta property="og:type" content="%s"/>'.chr(10), apply_filters('vseo_ogtype', 'article'));
-		printf('<meta name="twitter:card" content="%s" />'.chr(10), apply_filters('vseo_ogtype', 'summary'));
+		printf('<meta name="twitter:card" content="%s" />'.chr(10), apply_filters('vseo_twittercard', 'summary'));
 
 
 		if($image = self::get_meta_image()) {
