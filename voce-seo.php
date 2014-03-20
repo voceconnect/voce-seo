@@ -1,7 +1,7 @@
 <?php
 /*
   Plugin Name: Voce SEO
-  Version: 0.2.5
+  Version: 0.2.6
   Plugin URI: http://voceconnect.com/
   Description: An SEO plugin taking things from both WP SEO and All in One SEO but leaving out the VIP incompatible pieces.
   Author: Voce Platforms
@@ -167,7 +167,7 @@ class VSEO {
 			printf('<meta name="twitter:image" content="%s" />'.chr(10), esc_attr($image));
 			printf('<meta property="og:image" content="%s" />'.chr(10), esc_attr($image));
 		}
-		echo '<!-- end voce_seo -->\n';
+		echo '<!-- end voce_seo -->' . "\n";
 
 		do_action( 'voce_seo_after_wp_head' );
 	}

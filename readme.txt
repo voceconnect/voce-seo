@@ -3,7 +3,7 @@ Contributors: voceplatforms, prettyboymp
 Tags: SEO
 Requires at least: 3.7.0
 Tested up to: 3.8.1
-Stable tag: 0.2.5
+Stable tag: 0.2.6
 License: GPLv2 or later
 
 An SEO plugin taking things from both WP SEO and All in One SEO but leaving out the VIP incompatible pieces.
