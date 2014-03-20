@@ -151,7 +151,7 @@ class VSEO {
 			if ( ! $twitter_description && $description ) {
 				$twitter_description = $description;
 			}
-			printf( '<meta property="og:description" content="%s" />' . chr( 10 ), $og_description );
+			printf( '<meta property="og:description" content="%s" />' . chr( 10 ), esc_attr( $og_description ) );
 			printf( '<meta name="twitter:description" content="%s" />'.chr(10), esc_attr( $twitter_description ) );
 
 		}
