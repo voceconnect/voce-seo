@@ -94,25 +94,25 @@ class VSEO_Metabox {
 		$tab_fields = array(
 			'general' => array(
 				'title' => array(
-					"display_callback" => "vseo_field_text",
+					'display_callback' => 'vseo_field_text',
 					'sanitize_callback' => 'vseo_sanitize_meta_text',
 					'args' => array(
-						"description" => '<span class="description">Title display in search engines is limited to 70 chars, <span id="vseo_title-length"></span> chars left.</span>',
+						'description' => '<span class="description">Title display in search engines is limited to 70 chars, <span id="vseo_title-length"></span> chars left.</span>',
 					),
-					"title" => "SEO Title",
+					'title' => 'SEO Title',
 				),
 				'description' => array(
-					"display_callback" => "vseo_field_textarea",
+					'display_callback' => 'vseo_field_textarea',
 					'sanitize_callback' => 'vseo_sanitize_meta_text',
 					'args' => array(
-						"description" => '<span class="description">The <code>meta</code> description will be limited to 140 chars, <span id="vseo_description-length"></span> chars left</span>',
+						'description' => '<span class="description">The <code>meta</code> description will be limited to 140 chars, <span id="vseo_description-length"></span> chars left</span>',
 					),
-					"title" => "Meta Description",
+					'title' => 'Meta Description',
 				),
 			),
 			'advanced' => array(
 				'robots-noindex' => array(
-					"display_callback" => "vseo_field_select",
+					'display_callback' => 'vseo_field_select',
 					'sanitize_callback' => 'vseo_sanitize_select',
 					'args' => array(
 						'options' => array(
@@ -122,10 +122,10 @@ class VSEO_Metabox {
 						),
 						'default' => '0',
 					),
-					"title" => "Meta Robots Index",
+					'title' => 'Meta Robots Index',
 				),
 				'robots-nofollow' => array(
-					"display_callback" => "vseo_field_select",
+					'display_callback' => 'vseo_field_select',
 					'sanitize_callback' => 'vseo_sanitize_select',
 					'args' => array(
 						'options' => array(
@@ -135,34 +135,42 @@ class VSEO_Metabox {
 						),
 						'default' => '0',
 					),
-					"title" => "Meta Robots Follow",
+					'title' => 'Meta Robots Follow',
 				),
 				'canonical' => array(
-					"display_callback" => "vseo_field_text",
+					'display_callback' => 'vseo_field_text',
 					'sanitize_callback' => 'vseo_sanitize_url',
 					'args' => array(
-						"description" => '<span class="description">The canonical URL that this page should point to, leave empty to default to permalink.</span>',
+						'description' => '<span class="description">The canonical URL that this page should point to, leave empty to default to permalink.</span>',
 					),
-					"title" => "Canonical URL",
+					'title' => 'Canonical URL',
 				),
 				'redirect' => array(
-					"display_callback" => "vseo_field_text",
+					'display_callback' => 'vseo_field_text',
 					'sanitize_callback' => 'vseo_sanitize_url',
 					'args' => array(
-						"description" => '<span class="description">The URL that this page should redirect to.</span>',
+						'description' => '<span class="description">The URL that this page should redirect to.</span>',
 					),
-					"title" => "301 Redirect URL",
+					'title' => '301 Redirect URL',
 				),
 
 			),
 			'social' => array(
 				'og_description' => array(
-					"display_callback" => "vseo_field_textarea",
+					'display_callback' => 'vseo_field_textarea',
 					'sanitize_callback' => 'vseo_sanitize_meta_text',
 					'args' => array(
-						"description" => '<span class="description">If you don\'t want to use the meta description for sharing the post on Facebook but want another description there, write it here.</span>',
+						'description' => '<span class="description">If you don\'t want to use the meta description for sharing the post on Facebook but want another description there, write it here.</span>',
 					),
-					"title" => "Facebook Description",
+					'title' => 'Facebook Description',
+				),
+				'twitter_description' => array(
+					'display_callback' => 'vseo_field_textarea',
+					'sanitize_callback' => 'vseo_sanitize_meta_text',
+					'args' => array(
+						'description' => '<span class="description">If you don\'t want to use the meta description for Twitter card but want another description there, write it here.</span>',
+					),
+					'title' => 'Twitter Description',
 				),
 
 			),
