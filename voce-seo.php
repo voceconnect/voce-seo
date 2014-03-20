@@ -143,10 +143,16 @@ class VSEO {
 		}
 
 		if ( isset( $queried_object->post_type ) ) {
-			if ( $og_description = self::get_seo_meta( 'og_description', get_queried_object_id() ) ) {
-				printf( '<meta property="og:description" content="%s" />' . chr( 10 ), $og_description );
-				printf('<meta name="twitter:description" content="%s" />'.chr(10), esc_attr($og_description));
+			$og_description = self::get_seo_meta( 'og_description', get_queried_object_id() );
+			$twitter_description = self::get_seo_meta( 'twitter_description', get_queried_object_id() );
+			if ( ! $og_description && $description ) {
+				$og_description = $description;
 			}
+			if ( ! $twitter_description && $description ) {
+				$twitter_description = $description;
+			}
+			printf( '<meta property="og:description" content="%s" />' . chr( 10 ), $og_description );
+			printf( '<meta name="twitter:description" content="%s" />'.chr(10), esc_attr( $twitter_description ) );
 
 		}
 
@@ -161,7 +167,7 @@ class VSEO {
 			printf('<meta name="twitter:image" content="%s" />'.chr(10), esc_attr($image));
 			printf('<meta property="og:image" content="%s" />'.chr(10), esc_attr($image));
 		}
-		echo '<!-- end voce_seo -->';
+		echo '<!-- end voce_seo -->\n';
 
 		do_action( 'voce_seo_after_wp_head' );
 	}
