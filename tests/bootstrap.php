@@ -17,7 +17,7 @@ require_once __DIR__ . '/pluggable.php';
 require_once $_tests_dir . '/includes/functions.php';
 
 function _manually_load_plugin() {
-        require dirname( __FILE__ ) . '/voce-settings-api/voce-settings-api.php';
+        require dirname( __FILE__ ) . '/../vendor/autoload.php';
         require dirname( __FILE__ ) . '/../voce-seo.php';
 }
 tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );

@@ -7,16 +7,16 @@
     "packages": [
         {
             "name": "voceconnect/voce-settings-api",
-            "version": "v0.4.2",
+            "version": "0.4.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/voceconnect/voce-settings-api.git",
-                "reference": "9c8066b1a26eb59a36a0ce8da0d4d0b2c581811f"
+                "reference": "ea6c8a53759b1a90edb442b8b5f9b73083909428"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/voceconnect/voce-settings-api/zipball/9c8066b1a26eb59a36a0ce8da0d4d0b2c581811f",
-                "reference": "9c8066b1a26eb59a36a0ce8da0d4d0b2c581811f",
+                "url": "https://api.github.com/repos/voceconnect/voce-settings-api/zipball/ea6c8a53759b1a90edb442b8b5f9b73083909428",
+                "reference": "ea6c8a53759b1a90edb442b8b5f9b73083909428",
                 "shasum": ""
             },
             "type": "library",
@@ -36,7 +36,7 @@
                 }
             ],
             "description": "A simplification of the core WordPress settings API",
-            "time": "2013-11-27 17:19:08"
+            "time": "2014-02-25 15:10:19"
         }
     ],
     "packages-dev": [
