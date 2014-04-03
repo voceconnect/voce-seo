@@ -121,21 +121,13 @@ class VSEO {
 		update_option('VSEO_Version', self::DB_VERSION);
 	}
 
-	public static function generate_seo_data() {
-
+	public static function generate_facebook_seo_data( $meta_objects = array() ) {
 		if( $canonical = self::get_canonical_url() ) {
-			$meta_objects = self::create_meta_object( 'canonical', 'link', array( 'rel' => 'canonical', 'content' => esc_url( $canonical ) ), $meta_objects );
+			$meta_objects = self::create_meta_object( 'og:url', 'meta', array( 'property' => 'og:url', 'content' => esc_url( $canonical ) ), $meta_objects );
 		}
 
-	}
-
-	public static function generate_facebook_seo_data() {
-		if( $canonical = self::get_canonical_url() ) {
-			$meta_objects = self::create_meta_object( 'og:url', 'meta', array( 'name' => 'og:url', 'content' => esc_url( $canonical ) ), $meta_objects );
-		}
-
-		$meta_objects = self::create_meta_object( 'og:site_name', 'meta', array( 'name' => 'og:site_name', 'content' => esc_attr( get_bloginfo( 'name' ) ) ), $meta_objects );
-		$meta_objects = self::create_meta_object( 'og:locale', 'meta', array( 'name' => 'og:locale', 'content' => 'en_us' ), $meta_objects );
+		$meta_objects = self::create_meta_object( 'og:site_name', 'meta', array( 'property' => 'og:site_name', 'content' => esc_attr( get_bloginfo( 'name' ) ) ), $meta_objects );
+		$meta_objects = self::create_meta_object( 'og:locale', 'meta', array( 'property' => 'og:locale', 'content' => 'en_us' ), $meta_objects );
 
 		$description    = self::get_meta_description();
 		$queried_object = get_queried_object();
@@ -143,19 +135,21 @@ class VSEO {
 			$og_description = self::get_seo_meta( 'og_description', get_queried_object_id() );
 			if ( ! $og_description )
 				$og_description = $description;
-			$meta_objects = self::create_meta_object( 'og:description', 'meta', array( 'name' => 'og:description', 'content' => esc_attr( $og_description ) ), $meta_objects );
+			$meta_objects = self::create_meta_object( 'og:description', 'meta', array( 'property' => 'og:description', 'content' => esc_attr( $og_description ) ), $meta_objects );
 		}
 
-		$meta_objects = self::create_meta_object( 'og:title', 'meta', array( 'name' => 'og:title', 'content' => esc_attr( self::get_ogtitle() ) ), $meta_objects );
+		$meta_objects = self::create_meta_object( 'og:title', 'meta', array( 'property' => 'og:title', 'content' => esc_attr( self::get_ogtitle() ) ), $meta_objects );
 
-		$meta_objects = self::create_meta_object( 'og:type', 'meta', array( 'name' => 'og:type', 'content' => apply_filters( 'vseo_ogtype', 'article' ) ), $meta_objects );
+		$meta_objects = self::create_meta_object( 'og:type', 'meta', array( 'property' => 'og:type', 'content' => apply_filters( 'vseo_ogtype', 'article' ) ), $meta_objects );
 
 		if( $image = self::get_meta_image() ) {
-			$meta_objects = self::create_meta_object( 'og:image', 'meta', array( 'name' => 'og:image', 'content' => esc_attr( $image ) ), $meta_objects );
+			$meta_objects = self::create_meta_object( 'og:image', 'meta', array( 'property' => 'og:image', 'content' => esc_attr( $image ) ), $meta_objects );
 		}
+
+		return $meta_objects;
 	}
 
-	public static function generate_twitter_seo_data() {
+	public static function generate_twitter_seo_data( $meta_objects = array() ) {
 		if( $canonical = self::get_canonical_url() ) {
 			$meta_objects = self::create_meta_object( 'twitter:url', 'meta', array( 'name' => 'twitter:url', 'content' => esc_url( $canonical ) ), $meta_objects );
 		}
@@ -176,6 +170,8 @@ class VSEO {
 		if( $image = self::get_meta_image() ) {
 			$meta_objects = self::create_meta_object( 'twitter:image', 'meta', array( 'name' => 'twitter:image', 'content' => esc_attr( $image ) ), $meta_objects );
 		}
+
+		return $meta_objects;
 	}
 
 	private static function create_meta_object( $key, $type, $attributes = array(), $meta_objects = array() ) {
@@ -183,6 +179,8 @@ class VSEO {
 			'type'       => $type,
 			'attributes' => $attributes
 		);
+
+		return $meta_objects;
 	}
 
 	public static function output_meta_objects_html( $meta_objects = array() ) {
@@ -193,11 +191,11 @@ class VSEO {
 			$attributes = '';
 			if ( is_array( $properties['attributes'] ) ) {
 				foreach( $properties['attributes'] as $attribute => $value ) {
-					$attributes = sprintf( '%s %s="%s"', $attributes, $attribute, $value );
+					$attributes .= sprintf( '%s="%s"', $attribute, $value );
 				}
 			}
 
-			printf( '<%s %s />', $properties['type'], $attributes );
+			printf( '<%s %s />' . PHP_EOL, $properties['type'], $attributes );
 		}
 	}
 
@@ -210,15 +208,19 @@ class VSEO {
 
 		$meta_objects = self::robots_meta();
 
+		if( $canonical = self::get_canonical_url() ) {
+			$meta_objects = self::create_meta_object( 'canonical', 'link', array( 'rel' => 'canonical', 'content' => esc_url( $canonical ) ), $meta_objects );
+		}
+
 		if( $description = self::get_meta_description() ) {
 			$meta_objects = self::create_meta_object( 'description', 'meta', array( 'name' => 'description', 'content' => esc_attr( $description ) ), $meta_objects );
 		}
 
 		if ( apply_filters( 'vseo_use_facebook_meta', true ) )
-			$meta_objects = self::generate_facebook_seo_data();
+			$meta_objects = self::generate_facebook_seo_data( $meta_objects );
 
 		if ( apply_filters( 'vseo_use_twitter_meta', true ) )
-			$meta_objects = self::generate_twitter_seo_data_seo_data();
+			$meta_objects = self::generate_twitter_seo_data( $meta_objects );
 
 		$meta_objects = apply_filters( 'vseo_meta_objects', $meta_objects );
 
