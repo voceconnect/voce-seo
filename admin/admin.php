@@ -176,6 +176,15 @@ class VSEO_Metabox {
 			),
 		);
 
+		if ( !apply_filters( 'vseo_use_facebook_meta', true ) ){
+			unset( $tab_fields['social']['og_description'] );
+		}
+
+		if ( !apply_filters( 'vseo_use_twitter_meta', true ) ){
+			unset( $tab_fields['social']['twitter_description'] );
+		}
+
+
 		return apply_filters('vseo_metabox_fields', isset($tab_fields[$tab]) ?
 			$tab_fields[$tab] : array(), $tab, $post_type);
 

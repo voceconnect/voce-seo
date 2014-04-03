@@ -1,7 +1,7 @@
 <?php
 /*
   Plugin Name: Voce SEO
-  Version: 0.2.6
+  Version: 0.2.7
   Plugin URI: http://voceconnect.com/
   Description: An SEO plugin taking things from both WP SEO and All in One SEO but leaving out the VIP incompatible pieces.
   Author: Voce Platforms
@@ -121,52 +121,111 @@ class VSEO {
 		update_option('VSEO_Version', self::DB_VERSION);
 	}
 
-	public static function on_wp_head() {
+	public static function generate_facebook_seo_data( $meta_objects = array() ) {
+		if( $canonical = self::get_canonical_url() ) {
+			$meta_objects = self::create_meta_object( 'og:url', 'meta', array( 'property' => 'og:url', 'content' => esc_url( $canonical ) ), $meta_objects );
+		}
+
+		$meta_objects = self::create_meta_object( 'og:site_name', 'meta', array( 'property' => 'og:site_name', 'content' => esc_attr( get_bloginfo( 'name' ) ) ), $meta_objects );
+		$meta_objects = self::create_meta_object( 'og:locale', 'meta', array( 'property' => 'og:locale', 'content' => 'en_us' ), $meta_objects );
+
+		$description    = self::get_meta_description();
 		$queried_object = get_queried_object();
+		if ( isset( $queried_object->post_type ) ) {
+			$og_description = self::get_seo_meta( 'og_description', get_queried_object_id() );
+			if ( ! $og_description )
+				$og_description = $description;
+			$meta_objects = self::create_meta_object( 'og:description', 'meta', array( 'property' => 'og:description', 'content' => esc_attr( $og_description ) ), $meta_objects );
+		}
+
+		$meta_objects = self::create_meta_object( 'og:title', 'meta', array( 'property' => 'og:title', 'content' => esc_attr( self::get_ogtitle() ) ), $meta_objects );
+
+		$meta_objects = self::create_meta_object( 'og:type', 'meta', array( 'property' => 'og:type', 'content' => apply_filters( 'vseo_ogtype', 'article' ) ), $meta_objects );
+
+		if( $image = self::get_meta_image() ) {
+			$meta_objects = self::create_meta_object( 'og:image', 'meta', array( 'property' => 'og:image', 'content' => esc_attr( $image ) ), $meta_objects );
+		}
+
+		return $meta_objects;
+	}
+
+	public static function generate_twitter_seo_data( $meta_objects = array() ) {
+		if( $canonical = self::get_canonical_url() ) {
+			$meta_objects = self::create_meta_object( 'twitter:url', 'meta', array( 'name' => 'twitter:url', 'content' => esc_url( $canonical ) ), $meta_objects );
+		}
+
+		$description    = self::get_meta_description();
+		$queried_object = get_queried_object();
+		if ( isset( $queried_object->post_type ) ) {
+			$twitter_description = self::get_seo_meta( 'twitter_description', get_queried_object_id() );
+			if ( ! $twitter_description )
+				$twitter_description = $description;
+			$meta_objects = self::create_meta_object( 'twitter:description', 'meta', array( 'name' => 'twitter:description', 'content' => esc_attr( $twitter_description ) ), $meta_objects );
+		}
+
+		$meta_objects = self::create_meta_object( 'twitter:title', 'meta', array( 'name' => 'twitter:title', 'content' => esc_attr( self::get_ogtitle() ) ), $meta_objects );
+
+		$meta_objects = self::create_meta_object( 'twitter:card', 'meta', array( 'name' => 'twitter:card', 'content' => apply_filters( 'vseo_twittercard', 'summary' ) ), $meta_objects );
+
+		if( $image = self::get_meta_image() ) {
+			$meta_objects = self::create_meta_object( 'twitter:image', 'meta', array( 'name' => 'twitter:image', 'content' => esc_attr( $image ) ), $meta_objects );
+		}
+
+		return $meta_objects;
+	}
+
+	private static function create_meta_object( $key, $type, $attributes = array(), $meta_objects = array() ) {
+		$meta_objects[$key] = array(
+			'type'       => $type,
+			'attributes' => $attributes
+		);
+
+		return $meta_objects;
+	}
+
+	public static function output_meta_objects_html( $meta_objects = array() ) {
+		foreach( $meta_objects as $meta_object => $properties ) {
+			if ( !isset( $properties['type'] ) )
+				continue;
+
+			$attributes = '';
+			if ( is_array( $properties['attributes'] ) ) {
+				foreach( $properties['attributes'] as $attribute => $value ) {
+					$attributes .= sprintf( '%s="%s"', $attribute, $value );
+				}
+			}
+
+			printf( '<%s %s />' . PHP_EOL, $properties['type'], $attributes );
+		}
+	}
+
+	public static function on_wp_head() {
+		$meta_objects = array();
 
 		do_action( 'voce_seo_before_wp_head' );
 
 		echo "<!-- voce_seo -->\n";
-		if($canonical = self::get_canonical_url()) {
-			printf('<link rel="canonical" href="%s" />'.chr(10), esc_url($canonical));
-			printf('<meta name="twitter:url" content="%s" />'.chr(10), esc_attr($canonical));
-			printf('<meta property="og:url" content="%s" />'.chr(10), esc_attr($canonical));
+
+		$meta_objects = self::robots_meta();
+
+		if( $canonical = self::get_canonical_url() ) {
+			$meta_objects = self::create_meta_object( 'canonical', 'link', array( 'rel' => 'canonical', 'content' => esc_url( $canonical ) ), $meta_objects );
 		}
 
-		printf('<meta property="og:site_name" content="%s"/>', esc_attr(get_bloginfo( 'name' )));
-		echo '<meta property="og:locale" content="en_us"/>';
-
-		self::robots_meta();
-
-		if($description = self::get_meta_description() ) {
-			printf('<meta name="description" content="%s" />'.chr(10), esc_attr($description));
+		if( $description = self::get_meta_description() ) {
+			$meta_objects = self::create_meta_object( 'description', 'meta', array( 'name' => 'description', 'content' => esc_attr( $description ) ), $meta_objects );
 		}
 
-		if ( isset( $queried_object->post_type ) ) {
-			$og_description = self::get_seo_meta( 'og_description', get_queried_object_id() );
-			$twitter_description = self::get_seo_meta( 'twitter_description', get_queried_object_id() );
-			if ( ! $og_description && $description ) {
-				$og_description = $description;
-			}
-			if ( ! $twitter_description && $description ) {
-				$twitter_description = $description;
-			}
-			printf( '<meta property="og:description" content="%s" />' . chr( 10 ), esc_attr( $og_description ) );
-			printf( '<meta name="twitter:description" content="%s" />'.chr(10), esc_attr( $twitter_description ) );
+		if ( apply_filters( 'vseo_use_facebook_meta', true ) )
+			$meta_objects = self::generate_facebook_seo_data( $meta_objects );
 
-		}
+		if ( apply_filters( 'vseo_use_twitter_meta', true ) )
+			$meta_objects = self::generate_twitter_seo_data( $meta_objects );
 
-		printf('<meta property="og:title" content="%s" />'.chr(10), esc_attr(self::get_ogtitle()));
-		printf('<meta name="twitter:title" content="%s" />'.chr(10), esc_attr(self::get_ogtitle()));
+		$meta_objects = apply_filters( 'vseo_meta_objects', $meta_objects );
 
-		printf('<meta property="og:type" content="%s"/>'.chr(10), apply_filters('vseo_ogtype', 'article'));
-		printf('<meta name="twitter:card" content="%s" />'.chr(10), apply_filters('vseo_twittercard', 'summary'));
+		self::output_meta_objects_html( $meta_objects );
 
-
-		if($image = self::get_meta_image()) {
-			printf('<meta name="twitter:image" content="%s" />'.chr(10), esc_attr($image));
-			printf('<meta property="og:image" content="%s" />'.chr(10), esc_attr($image));
-		}
 		echo '<!-- end voce_seo -->' . "\n";
 
 		do_action( 'voce_seo_after_wp_head' );
@@ -281,7 +340,9 @@ class VSEO {
 		$robotsstr = implode(',', $robots );
 
 		if ( $robotsstr != '' ) {
-			echo '<meta name="robots" content="' . esc_attr( $robotsstr ) . '"/>' . "\n";
+			return self::create_meta_object( 'robots', 'meta', array( 'name' => 'robots', 'content' => esc_attr( $robotsstr ) ) );
+		} else {
+			return array();
 		}
 	}
 
@@ -340,8 +401,9 @@ class VSEO {
 
 		if ( isset($queried_object->post_type) ) {
 			if(  has_post_thumbnail( get_queried_object_id() )) {
-				$img = wp_get_attachment_image_src(get_post_thumbnail_id( get_queried_object_id(), 'medium'));
-				$img = $img[0];
+				$img = wp_get_attachment_image_src(get_post_thumbnail_id( get_queried_object_id() ), 'medium');
+				if( !empty( $img[0] ) )
+					$img = $img[0];
 			}
 		}
 
