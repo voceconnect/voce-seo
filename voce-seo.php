@@ -401,8 +401,9 @@ class VSEO {
 
 		if ( isset($queried_object->post_type) ) {
 			if(  has_post_thumbnail( get_queried_object_id() )) {
-				$img = wp_get_attachment_image_src(get_post_thumbnail_id( get_queried_object_id(), 'medium'));
-				$img = $img[0];
+				$img = wp_get_attachment_image_src(get_post_thumbnail_id( get_queried_object_id() ), 'medium');
+				if( !empty( $img[0] ) )
+					$img = $img[0];
 			}
 		}
 
