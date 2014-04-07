@@ -191,11 +191,11 @@ class VSEO {
 			$attributes = '';
 			if ( is_array( $properties['attributes'] ) ) {
 				foreach( $properties['attributes'] as $attribute => $value ) {
-					$attributes .= sprintf( '%s="%s"', $attribute, $value );
+					$attributes .= sprintf( ' %s="%s"', $attribute, $value );
 				}
 			}
 
-			printf( '<%s %s />' . PHP_EOL, $properties['type'], $attributes );
+			printf( '<%s%s />' . PHP_EOL, $properties['type'], $attributes );
 		}
 	}
 
