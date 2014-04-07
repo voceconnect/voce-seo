@@ -3,7 +3,7 @@ Contributors: voceplatforms, prettyboymp
 Tags: SEO
 Requires at least: 3.7.0
 Tested up to: 3.8.1
-Stable tag: 0.2.6
+Stable tag: 0.2.8
 License: GPLv2 or later
 
 An SEO plugin taking things from both WP SEO and All in One SEO but leaving out the VIP incompatible pieces.
@@ -14,6 +14,13 @@ Adds filterable SEO and Social fields to all publicly queryable post types and a
 to improve discoverability.
 
 == Changelog ==
+
+= Version 0.2.8 =
+* Fixing issue where tag attributes would not be separated.
+
+= Version 0.2.7 =
+* Reworking logic to create meta/link tags; an associative array is generated of all the meta/link tags and is now filterable.
+* OG and Twitter tags can now be filtered/disabled.
 
 = Version 0.2.5 =
 * Separate filters for og:description and twitter:description

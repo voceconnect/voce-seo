@@ -1,7 +1,7 @@
 <?php
 /*
   Plugin Name: Voce SEO
-  Version: 0.2.7
+  Version: 0.2.8
   Plugin URI: http://voceconnect.com/
   Description: An SEO plugin taking things from both WP SEO and All in One SEO but leaving out the VIP incompatible pieces.
   Author: Voce Platforms
@@ -191,11 +191,11 @@ class VSEO {
 			$attributes = '';
 			if ( is_array( $properties['attributes'] ) ) {
 				foreach( $properties['attributes'] as $attribute => $value ) {
-					$attributes .= sprintf( '%s="%s"', $attribute, $value );
+					$attributes .= sprintf( '%s="%s" ', $attribute, $value );
 				}
 			}
 
-			printf( '<%s %s />' . PHP_EOL, $properties['type'], $attributes );
+			printf( '<%s %s/>' . PHP_EOL, $properties['type'], $attributes );
 		}
 	}
 
