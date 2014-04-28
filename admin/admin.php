@@ -1,81 +1,85 @@
 <?php
 
 class VSEO_Admin {
+
 	public static function init() {
 		require_once(__DIR__ . '/field-callbacks.php');
 		VSEO_Metabox::init();
+		VSEO_Taxonomy::init();
 	}
+
 }
 
 class VSEO_Metabox {
+
 	public static function init() {
-		add_action('add_meta_boxes', function($post_type) {
-				if(get_post_type_object($post_type)->publicly_queryable || $post_type == 'page') {
-					add_meta_box('vseo_meta', 'SEO Settings', array( 'VSEO_Metabox', 'meta_box' ),
-						$post_type, 'advanced');
-				}
+		add_action( 'add_meta_boxes', function($post_type) {
+			if ( get_post_type_object( $post_type )->publicly_queryable || $post_type == 'page' ) {
+				add_meta_box( 'vseo_meta', 'SEO Settings', array( 'VSEO_Metabox', 'meta_box' ), $post_type, 'advanced' );
+			}
 		}, 99 );
 
-		add_action('save_post', array(__CLASS__, 'on_save_post'));
+		add_action( 'save_post', array( __CLASS__, 'on_save_post' ) );
 	}
 
-	public static function meta_box($post) {
-		$post_type = get_post_type($post);
-		$tabs = self::get_metabox_tabs($post_type);
-		$vseo_meta = (array) get_post_meta( $post->ID, 'vseo_meta', true );
+	public static function meta_box( $post ) {
+		$post_type = get_post_type( $post );
+		$tabs = self::get_metabox_tabs( $post_type );
+		$vseo_meta = ( array ) get_post_meta( $post->ID, 'vseo_meta', true );
 		?>
 		<div class="vseo-metabox-tabs-div">
 			<ul class="vseo-metabox-tabs" id="vseo-metabox-tabs">
 				<?php
-				foreach($tabs as $tab_id => $tab) {
-					sprintf('<li class="vseo-%1$s"><a class="vseo_tablink" href="#vseo_%1$s">%2$s</a></li>',
-						$tab_id, esc_html($tab['label']));
+				foreach ( $tabs as $tab_id => $tab ) {
+					sprintf( '<li class="vseo-%1$s"><a class="vseo_tablink" href="#vseo_%1$s">%2$s</a></li>', $tab_id, esc_html( $tab['label'] ) );
 				}
 				?>
 			</ul>
-			<?php foreach($tabs as $tab_id => $tab) : ?>
+			<?php foreach ( $tabs as $tab_id => $tab ) : ?>
 				<div class="vseotab" id="vseo-<?php echo $tab_id ?>">
-					<?php foreach(self::get_metabox_fields($tab_id, $post_type) as $field_id => $field): ?>
-					<p>
-						<label><?php echo $field['title']; ?></label>
-						<?php echo call_user_func_array( $field['display_callback'], array(
-							'vseo' . $field_id,
-							isset( $vseo_meta[$field_id] ) ? $vseo_meta[$field_id] : null,
-							isset( $field['args'] ) ? $field['args'] : array( ) )
-						); ?>
-					</p>
+					<?php foreach ( self::get_metabox_fields( $tab_id, $post_type ) as $field_id => $field ): ?>
+						<p>
+							<label><?php echo $field['title']; ?></label>
+							<?php
+							echo call_user_func_array( $field['display_callback'], array(
+								'vseo' . $field_id,
+								isset( $vseo_meta[$field_id] ) ? $vseo_meta[$field_id] : null,
+								isset( $field['args'] ) ? $field['args'] : array() )
+							);
+							?>
+						</p>
 					<?php endforeach; ?>
 				</div>
 			<?php endforeach; ?>
 		</div>
 		<?php
-		wp_nonce_field('vseo_update_meta', 'vseo_nonce');
+		wp_nonce_field( 'vseo_update_meta', 'vseo_nonce' );
 	}
 
-	public static function on_save_post($post_id) {
-		if(wp_is_post_autosave($post_id) || wp_is_post_revision($post_id)) {
+	public static function on_save_post( $post_id ) {
+		if ( wp_is_post_autosave( $post_id ) || wp_is_post_revision( $post_id ) ) {
 			return $post_id;
 		}
-		if(isset($_REQUEST['vseo_nonce']) && wp_verify_nonce($_REQUEST['vseo_nonce'], 'vseo_update_meta')) {
-			$post_type = get_post_type($post_id);
-			$tabs = self::get_metabox_tabs($post_type);
-			$vseo_meta = (array) get_post_meta( $post_id, 'vseo_meta', true );
+		if ( isset( $_REQUEST['vseo_nonce'] ) && wp_verify_nonce( $_REQUEST['vseo_nonce'], 'vseo_update_meta' ) ) {
+			$post_type = get_post_type( $post_id );
+			$tabs = self::get_metabox_tabs( $post_type );
+			$vseo_meta = ( array ) get_post_meta( $post_id, 'vseo_meta', true );
 
-			foreach($tabs as $tab_id => $tab) {
-				foreach(self::get_metabox_fields($tab_id, $post_type) as $field_id => $field) {
-					if(isset($field['sanitize_callback'])) {
-						$vseo_meta[$field_id] = call_user_func_array($field['sanitize_callback'], array(
-							isset($_REQUEST['vseo' . $field_id]) ? $_REQUEST['vseo' . $field_id] : null,
+			foreach ( $tabs as $tab_id => $tab ) {
+				foreach ( self::get_metabox_fields( $tab_id, $post_type ) as $field_id => $field ) {
+					if ( isset( $field['sanitize_callback'] ) ) {
+						$vseo_meta[$field_id] = call_user_func_array( $field['sanitize_callback'], array(
+							isset( $_REQUEST['vseo' . $field_id] ) ? $_REQUEST['vseo' . $field_id] : null,
 							$field['args']
-							));
+								) );
 					}
 				}
 			}
-			update_post_meta($post_id, 'vseo_meta', $vseo_meta);
+			update_post_meta( $post_id, 'vseo_meta', $vseo_meta );
 		}
 	}
 
-	private function get_metabox_tabs($post_type) {
+	private function get_metabox_tabs( $post_type ) {
 		$metabox_tabs = array(
 			'general' => array(
 				'label' => 'General'
@@ -87,10 +91,10 @@ class VSEO_Metabox {
 				'label' => 'Social'
 			)
 		);
-		return apply_filters('vseo_metabox_tabs', $metabox_tabs, $post_type);
+		return apply_filters( 'vseo_metabox_tabs', $metabox_tabs, $post_type );
 	}
 
-	private function get_metabox_fields($tab, $post_type) {
+	private function get_metabox_fields( $tab, $post_type ) {
 		$tab_fields = array(
 			'general' => array(
 				'title' => array(
@@ -153,7 +157,6 @@ class VSEO_Metabox {
 					),
 					'title' => '301 Redirect URL',
 				),
-
 			),
 			'social' => array(
 				'og_description' => array(
@@ -172,23 +175,84 @@ class VSEO_Metabox {
 					),
 					'title' => 'Twitter Description',
 				),
-
 			),
 		);
 
-		if ( !apply_filters( 'vseo_use_facebook_meta', true ) ){
+		if ( !apply_filters( 'vseo_use_facebook_meta', true ) ) {
 			unset( $tab_fields['social']['og_description'] );
 		}
 
-		if ( !apply_filters( 'vseo_use_twitter_meta', true ) ){
+		if ( !apply_filters( 'vseo_use_twitter_meta', true ) ) {
 			unset( $tab_fields['social']['twitter_description'] );
 		}
 
 
-		return apply_filters('vseo_metabox_fields', isset($tab_fields[$tab]) ?
-			$tab_fields[$tab] : array(), $tab, $post_type);
-
+		return apply_filters( 'vseo_metabox_fields', isset( $tab_fields[$tab] ) ?
+						$tab_fields[$tab] : array(), $tab, $post_type );
 	}
 
+}
+
+class VSEO_Taxonomy {
+	
+	public static $option_key = 'vseo_term_meta';
+
+	public static function init() {
+		$taxonomies = get_taxonomies( '', 'names' );
+		foreach ( $taxonomies as $taxonomy ) {
+			add_action( $taxonomy . '_add_form_fields', array( __CLASS__, 'add_new_meta_field' ), 10, 1 );
+			add_action( $taxonomy . '_edit_form_fields', array( __CLASS__, 'edit_meta_field' ), 10, 2 );
+			add_action( 'edited_' . $taxonomy, array( __CLASS__, 'save_meta' ), 10, 2 );
+			add_action( 'create_' . $taxonomy, array( __CLASS__, 'save_meta' ), 10, 2 );
+		}
+	}
+
+	public static function add_new_meta_field( $taxonomy ) {
+		?>
+		<div class="form-field">
+			<label for="term_meta[title]"><?php _e( 'SEO title', 'voce_seo' ); ?></label>
+			<input type="text" name="term_meta[title]" id="term_meta[title]" value="">
+			<p class="description"><?php _e( 'Blank for default', 'voce_seo' ); ?></p>
+		</div>
+		<input type="hidden" value="<?php echo $taxonomy; ?>" name="voce_seo_taxonomy">
+		<?php
+		wp_nonce_field( 'voce_seo_term', 'voce_seo_term' );
+	}
+
+	public static function edit_meta_field( $term, $taxonomy ) {
+		$term_id = $term->term_id;
+		$term_meta = get_option( self::$option_key );
+		?>
+		<tr class="form-field">
+			<th scope="row" valign="top"><label for="term_meta[title]"><?php _e( 'SEO Title', 'voce_seo' ); ?></label></th>
+			<td>
+				<input type="text" name="term_meta[title]" id="term_meta[title]" value="<?php echo isset( $term_meta[ $taxonomy . '_' . $term_id ]['title'] ) ? esc_attr( $term_meta[ $taxonomy . '_' . $term_id ]['title'] ) : ''; ?>">
+			</td>
+		</tr>
+		<input type="hidden" value="<?php echo $taxonomy; ?>" name="voce_seo_taxonomy">
+		<?php
+		wp_nonce_field( 'voce_seo_term', 'voce_seo_term' );
+	}
+
+	function save_meta( $term_id ) {
+		if (
+				isset( $_POST['term_meta'] ) &&
+				check_admin_referer( 'voce_seo_term', 'voce_seo_term' )
+		) {
+			$_POST = array_map( 'stripslashes_deep', $_POST ); //prevent escaping from option value http://codex.wordpress.org/Function_Reference/stripslashes_deep
+			$taxonomy = $_POST['voce_seo_taxonomy'];
+			
+			$term_meta = get_option( self::$option_key );
+			$cat_keys = array_keys( $_POST['term_meta'] );
+			$meta_data = array();
+			foreach ( $cat_keys as $key ) {
+				if ( isset( $_POST['term_meta'][$key] ) ) {
+					$meta_data[$key] = $_POST['term_meta'][$key];
+				}
+			}
+			$term_meta[ $taxonomy . '_' . $term_id ] = $meta_data;
+			update_option( self::$option_key, $term_meta );
+		}
+	}
 
 }

@@ -1,7 +1,7 @@
 <?php
 /*
   Plugin Name: Voce SEO
-  Version: 0.2.8
+  Version: 0.2.9
   Plugin URI: http://voceconnect.com/
   Description: An SEO plugin taking things from both WP SEO and All in One SEO but leaving out the VIP incompatible pieces.
   Author: Voce Platforms
@@ -89,7 +89,9 @@ class VSEO {
 
 			}
 
-		}
+		} elseif ( is_tax() || is_category() || is_tag() ) {
+					$new_title = self::get_term_seo_title();
+				}
 
 		if ( !empty( $new_title ) ) {
 			$title = $new_title;
@@ -110,6 +112,26 @@ class VSEO {
 
 		return $title;
 	}
+		
+		private static function get_term_seo_title(){
+			$queried_object = get_queried_object();
+			$term_id = $queried_object->term_id; 
+			$taxonomy = $queried_object->taxonomy;
+			$option_key = $taxonomy . '_' . $term_id;
+			$term_meta = get_option( 'vseo_term_meta' );
+			if ( ! isset( $term_meta[ $option_key ]['title'] ) ) {
+				return;
+			}
+			$seo_title = $term_meta[ $option_key ]['title'];
+			$title_filter = 'single_cat_title';
+			if ( is_tax() ){
+				$title_filter = 'single_term_filter';
+			} elseif( is_tag() ) {
+				$title_filter = 'single_tag_filter';
+			}
+			$new_title = apply_filters( $title_filter, $seo_title );
+			return $new_title;
+		}
 
 	private static function upgrade_check() {
 		$db_version = get_option('VSEO_Version', '0.0');
@@ -131,13 +153,13 @@ class VSEO {
 
 		$description    = self::get_meta_description();
 		$queried_object = get_queried_object();
-		if ( isset( $queried_object->post_type ) ) {
+		if ( isset( $queried_object->post_type ) || ( is_tax() || is_category() || is_tag() ) ) {
 			$og_description = self::get_seo_meta( 'og_description', get_queried_object_id() );
 			if ( ! $og_description )
 				$og_description = $description;
-			$meta_objects = self::create_meta_object( 'og:description', 'meta', array( 'property' => 'og:description', 'content' => esc_attr( $og_description ) ), $meta_objects );
+			/* og_description is not required, so if it is not set, do not output it */
+						if ( $og_description ) $meta_objects = self::create_meta_object( 'og:description', 'meta', array( 'property' => 'og:description', 'content' => esc_attr( $og_description ) ), $meta_objects );
 		}
-
 		$meta_objects = self::create_meta_object( 'og:title', 'meta', array( 'property' => 'og:title', 'content' => esc_attr( self::get_ogtitle() ) ), $meta_objects );
 
 		$meta_objects = self::create_meta_object( 'og:type', 'meta', array( 'property' => 'og:type', 'content' => apply_filters( 'vseo_ogtype', 'article' ) ), $meta_objects );
@@ -156,7 +178,7 @@ class VSEO {
 
 		$description    = self::get_meta_description();
 		$queried_object = get_queried_object();
-		if ( isset( $queried_object->post_type ) ) {
+		if ( isset( $queried_object->post_type )  || ( is_tax() || is_category() || is_tag() ) ) {
 			$twitter_description = self::get_seo_meta( 'twitter_description', get_queried_object_id() );
 			if ( ! $twitter_description )
 				$twitter_description = $description;
@@ -239,9 +261,12 @@ class VSEO {
 			$title = $author->display_name;
 		} else if ( is_singular() ) {
 			global $post;
+						
 			$title = empty( $post->post_title ) ? ' ' : wp_kses( $post->post_title, array() ) ;
-		} else {
-			$title = '';
+				} else if ( is_tax() || is_category() || is_tag() ){
+					$title = self::get_term_seo_title();
+				} else {
+					$title = '';
 		}
 
 		return apply_filters( 'vseo_ogtitle', $title );
@@ -282,11 +307,17 @@ class VSEO {
 				$description = preg_replace( "/\s\s+/u", " ", $description );
 			}
 		} else {
-			if ( is_search() ) {
-				$description = '';
-			} else {
-				$description = get_bloginfo( 'description', 'display' );
-			}
+					if ( is_tax() || is_category() || is_tag() ) {
+							$queried_object = get_queried_object();  
+							$term_id = $queried_object->term_id; 
+							$taxonomy = $queried_object->taxonomy;
+							$description = term_description( $term_id, $taxonomy );
+							
+					} elseif ( is_search() ) {
+							$description = '';
+					} else {
+							$description = get_bloginfo( 'description', 'display' );
+					}
 		}
 
 		$description = apply_filters( 'seo_meta_description', trim( $description ) );
