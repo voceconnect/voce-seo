@@ -1,7 +1,7 @@
 <?php
 /*
   Plugin Name: Voce SEO
-  Version: 0.2.8
+  Version: 0.2.9
   Plugin URI: http://voceconnect.com/
   Description: An SEO plugin taking things from both WP SEO and All in One SEO but leaving out the VIP incompatible pieces.
   Author: Voce Platforms
@@ -119,6 +119,9 @@ class VSEO {
             $taxonomy = $queried_object->taxonomy;
             $option_key = $taxonomy . '_' . $term_id;
             $term_meta = get_option( 'vseo_term_meta' );
+            if ( ! isset( $term_meta[ $taxonomy . '_' . $term_id]['title'] ) ) {
+                return;
+            }
             $seo_title = $term_meta[ $taxonomy . '_' . $term_id]['title'];
             $title_filter = 'single_cat_title';
             if ( is_tax() ){
@@ -154,9 +157,10 @@ class VSEO {
 			$og_description = self::get_seo_meta( 'og_description', get_queried_object_id() );
 			if ( ! $og_description )
 				$og_description = $description;
-			if ( $og_description ) $meta_objects = self::create_meta_object( 'og:description', 'meta', array( 'property' => 'og:description', 'content' => esc_attr( $og_description ) ), $meta_objects );
+			/* og_description is not required, so if it is not set, do not output it */
+                        if ( $og_description ) $meta_objects = self::create_meta_object( 'og:description', 'meta', array( 'property' => 'og:description', 'content' => esc_attr( $og_description ) ), $meta_objects );
 		}
-		if ( self::get_ogtitle() ) $meta_objects = self::create_meta_object( 'og:title', 'meta', array( 'property' => 'og:title', 'content' => esc_attr( self::get_ogtitle() ) ), $meta_objects );
+		$meta_objects = self::create_meta_object( 'og:title', 'meta', array( 'property' => 'og:title', 'content' => esc_attr( self::get_ogtitle() ) ), $meta_objects );
 
 		$meta_objects = self::create_meta_object( 'og:type', 'meta', array( 'property' => 'og:type', 'content' => apply_filters( 'vseo_ogtype', 'article' ) ), $meta_objects );
 
@@ -178,10 +182,10 @@ class VSEO {
 			$twitter_description = self::get_seo_meta( 'twitter_description', get_queried_object_id() );
 			if ( ! $twitter_description )
 				$twitter_description = $description;
-			if ( $twitter_description ) $meta_objects = self::create_meta_object( 'twitter:description', 'meta', array( 'name' => 'twitter:description', 'content' => esc_attr( $twitter_description ) ), $meta_objects );
+			$meta_objects = self::create_meta_object( 'twitter:description', 'meta', array( 'name' => 'twitter:description', 'content' => esc_attr( $twitter_description ) ), $meta_objects );
 		}
 
-		if ( self::get_ogtitle() ) $meta_objects = self::create_meta_object( 'twitter:title', 'meta', array( 'name' => 'twitter:title', 'content' => esc_attr( self::get_ogtitle() ) ), $meta_objects );
+		$meta_objects = self::create_meta_object( 'twitter:title', 'meta', array( 'name' => 'twitter:title', 'content' => esc_attr( self::get_ogtitle() ) ), $meta_objects );
 
 		$meta_objects = self::create_meta_object( 'twitter:card', 'meta', array( 'name' => 'twitter:card', 'content' => apply_filters( 'vseo_twittercard', 'summary' ) ), $meta_objects );
 
