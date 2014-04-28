@@ -227,7 +227,6 @@ class VSEO_Taxonomy {
             <th scope="row" valign="top"><label for="term_meta[title]"><?php _e( 'SEO Title', 'voce_seo' ); ?></label></th>
             <td>
                 <input type="text" name="term_meta[title]" id="term_meta[title]" value="<?php echo isset( $term_meta[ $taxonomy . '_' . $term_id ]['title'] ) ? esc_attr( $term_meta[ $taxonomy . '_' . $term_id ]['title'] ) : ''; ?>">
-                <p class="description"><?php _e( 'Blank for default', 'voce_seo' ); ?></p>
             </td>
         </tr>
         <input type="hidden" value="<?php echo $taxonomy; ?>" name="voce_seo_taxonomy">
