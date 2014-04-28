@@ -119,10 +119,10 @@ class VSEO {
             $taxonomy = $queried_object->taxonomy;
             $option_key = $taxonomy . '_' . $term_id;
             $term_meta = get_option( 'vseo_term_meta' );
-            if ( ! isset( $term_meta[ $taxonomy . '_' . $term_id]['title'] ) ) {
+            if ( ! isset( $term_meta[ $option_key ]['title'] ) ) {
                 return;
             }
-            $seo_title = $term_meta[ $taxonomy . '_' . $term_id]['title'];
+            $seo_title = $term_meta[ $option_key ]['title'];
             $title_filter = 'single_cat_title';
             if ( is_tax() ){
                 $title_filter = 'single_term_filter';
