@@ -163,17 +163,17 @@ class VSEO_Metabox {
 					'display_callback' => 'vseo_field_text',
 					'sanitize_callback' => 'vseo_sanitize_meta_text',
 					'args' => array(
-						'description' => '<span class="description">If you don\'t want to use the post or SEO title for sharing the post on Facebook/OG but want another title there, write it here.</span>',
+						'description' => '<span class="description">If you don\'t want to use the post or SEO title for sharing the post on Facebook/Open Graph but want another title there, write it here.</span>',
 					),
-					'title' => 'Facebook/OG Title',
+					'title' => 'Facebook/Open Graph Title',
 				),
 				'og_description' => array(
 					'display_callback' => 'vseo_field_textarea',
 					'sanitize_callback' => 'vseo_sanitize_meta_text',
 					'args' => array(
-						'description' => '<span class="description">If you don\'t want to use the meta description for sharing the post on Facebook/OG but want another description there, write it here.</span>',
+						'description' => '<span class="description">If you don\'t want to use the meta description for sharing the post on Facebook/Open Graph but want another description there, write it here.</span>',
 					),
-					'title' => 'Facebook/OG Description',
+					'title' => 'Facebook/Open Graph Description',
 				),
 				'twitter_title' => array(
 					'display_callback' => 'vseo_field_text',
@@ -187,7 +187,7 @@ class VSEO_Metabox {
 					'display_callback' => 'vseo_field_textarea',
 					'sanitize_callback' => 'vseo_sanitize_meta_text',
 					'args' => array(
-						'description' => '<span class="description">If you don\'t want to use the meta title for sharing the post on Facebook/OG but want another title there, write it here.</span>',
+						'description' => '<span class="description">If you don\'t want to use the meta title for sharing the post on Facebook/Open Graph but want another title there, write it here.</span>',
 					),
 					'title' => 'Twitter Description',
 				),
