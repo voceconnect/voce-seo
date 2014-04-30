@@ -153,12 +153,14 @@ class VSEO {
 
 		$description    = self::get_meta_description();
 		$queried_object = get_queried_object();
-		$og_description = self::get_seo_meta( 'og_description', get_queried_object_id() );
-		if ( ! $og_description ) {
-			$og_description = $description;
-		}
-		if ( $og_description ) {
-			$meta_objects = self::create_meta_object( 'og:description', 'meta', array( 'property' => 'og:description', 'content' => esc_attr( $og_description ) ), $meta_objects );
+		if ( isset( $queried_object->post_type ) || ( is_tax() || is_category() || is_tag() ) || is_home() || is_front_page() ) {
+			$og_description = self::get_seo_meta( 'og_description', get_queried_object_id() );
+			if ( ! $og_description ) {
+				$og_description = $description;
+			}
+			if ( $og_description ) {
+				$meta_objects = self::create_meta_object( 'og:description', 'meta', array( 'property' => 'og:description', 'content' => esc_attr( $og_description ) ), $meta_objects );
+			}
 		}
 		$meta_objects = self::create_meta_object( 'og:title', 'meta', array( 'property' => 'og:title', 'content' => esc_attr( self::get_social_title( 'og_title' ) ) ), $meta_objects );
 		$meta_objects = self::create_meta_object( 'og:type', 'meta', array( 'property' => 'og:type', 'content' => apply_filters( 'vseo_ogtype', 'article' ) ), $meta_objects );
@@ -315,17 +317,17 @@ class VSEO {
 				$description = preg_replace( "/\s\s+/u", " ", $description );
 			}
 		} else {
-					if ( is_tax() || is_category() || is_tag() ) {
-							$queried_object = get_queried_object();  
-							$term_id = $queried_object->term_id; 
-							$taxonomy = $queried_object->taxonomy;
-							$description = term_description( $term_id, $taxonomy );
-							
-					} elseif ( is_search() ) {
-							$description = '';
-					} else {
-							$description = get_bloginfo( 'description', 'display' );
-					}
+			if ( is_tax() || is_category() || is_tag() ) {
+					$queried_object = get_queried_object();  
+					$term_id = $queried_object->term_id; 
+					$taxonomy = $queried_object->taxonomy;
+					$description = term_description( $term_id, $taxonomy );
+					
+			} elseif ( is_search() ) {
+					$description = '';
+			} else {
+					$description = get_bloginfo( 'description', 'display' );
+			}
 		}
 
 		$description = apply_filters( 'seo_meta_description', trim( $description ) );
@@ -440,7 +442,7 @@ class VSEO {
 
 		if ( isset($queried_object->post_type) ) {
 			if(  has_post_thumbnail( get_queried_object_id() )) {
-				$img = wp_get_attachment_image_src(get_post_thumbnail_id( get_queried_object_id() ), 'full');
+				$img = wp_get_attachment_image_src(get_post_thumbnail_id( get_queried_object_id() ), apply_filters( 'vseo_image_size', 'full' ) );
 				if( !empty( $img[0] ) )
 					$img = $img[0];
 			}
