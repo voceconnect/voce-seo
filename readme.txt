@@ -3,7 +3,7 @@ Contributors: voceplatforms, prettyboymp
 Tags: SEO
 Requires at least: 3.7.0
 Tested up to: 3.9
-Stable tag: 0.3.0
+Stable tag: 0.3.1
 License: GPLv2 or later
 
 An SEO plugin taking things from both WP SEO and All in One SEO but leaving out the VIP incompatible pieces.
@@ -14,6 +14,11 @@ Adds filterable SEO and Social fields to all publicly queryable post types and a
 to improve discoverability.
 
 == Changelog ==
+
+= Version 0.3.1 =
+* Set image to full size for og:image
+* Use og:description on homepage
+
 
 = Version 0.3.0 =
 * Adding ability to set separate Facebook, Twitter and SEO title

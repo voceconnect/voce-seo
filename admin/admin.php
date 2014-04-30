@@ -79,7 +79,7 @@ class VSEO_Metabox {
 		}
 	}
 
-	private function get_metabox_tabs( $post_type ) {
+	private static function get_metabox_tabs( $post_type ) {
 		$metabox_tabs = array(
 			'general' => array(
 				'label' => 'General'
@@ -94,7 +94,7 @@ class VSEO_Metabox {
 		return apply_filters( 'vseo_metabox_tabs', $metabox_tabs, $post_type );
 	}
 
-	private function get_metabox_fields( $tab, $post_type ) {
+	private static function get_metabox_fields( $tab, $post_type ) {
 		$tab_fields = array(
 			'general' => array(
 				'title' => array(
@@ -250,7 +250,7 @@ class VSEO_Taxonomy {
 		wp_nonce_field( 'voce_seo_term', 'voce_seo_term' );
 	}
 
-	function save_meta( $term_id ) {
+	public static function save_meta( $term_id ) {
 		if (
 				isset( $_POST['term_meta'] ) &&
 				check_admin_referer( 'voce_seo_term', 'voce_seo_term' )
