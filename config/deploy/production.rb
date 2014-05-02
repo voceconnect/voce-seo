@@ -6,3 +6,9 @@ set :type, 'plugin'
 
 set :svn_repository, "http://plugins.svn.wordpress.org/#{fetch(:application)}/"
 set :svn_deploy_to, "trunk"
+
+set :build_folders, (
+  fetch(:build_folders) << %w{
+    *config
+  }
+).flatten
