@@ -31,7 +31,7 @@ class VSEO_Metabox {
 			<ul class="vseo-metabox-tabs" id="vseo-metabox-tabs">
 				<?php
 				foreach ( $tabs as $tab_id => $tab ) {
-					sprintf( '<li class="vseo-%1$s"><a class="vseo_tablink" href="#vseo_%1$s">%2$s</a></li>', $tab_id, esc_html( $tab['label'] ) );
+					sprintf( '<li class="vseo-%1$s"><a class="vseo_tablink" href="#vseo_%1$s">%2$s</a></li>', esc_attr( $tab_id ), esc_html( $tab['label'] ) );
 				}
 				?>
 			</ul>
@@ -39,7 +39,7 @@ class VSEO_Metabox {
 				<div class="vseotab" id="vseo-<?php echo $tab_id ?>">
 					<?php foreach ( self::get_metabox_fields( $tab_id, $post_type ) as $field_id => $field ): ?>
 						<p>
-							<label><?php echo $field['title']; ?></label>
+							<label><?php echo esc_html( $field['title'] ); ?></label>
 							<?php
 							echo call_user_func_array( $field['display_callback'], array(
 								'vseo' . $field_id,
@@ -99,7 +99,7 @@ class VSEO_Metabox {
 			'general' => array(
 				'title' => array(
 					'display_callback' => 'vseo_field_text',
-					'sanitize_callback' => 'vseo_sanitize_meta_text',
+					'sanitize_callback' => 'sanitize_text_field',
 					'args' => array(
 						'description' => '<span class="description">Title display in search engines is limited to 70 chars, <span id="vseo_title-length"></span> chars left.</span>',
 					),
@@ -107,7 +107,7 @@ class VSEO_Metabox {
 				),
 				'description' => array(
 					'display_callback' => 'vseo_field_textarea',
-					'sanitize_callback' => 'vseo_sanitize_meta_text',
+					'sanitize_callback' => 'sanitize_text_field',
 					'args' => array(
 						'description' => '<span class="description">The <code>meta</code> description will be limited to 140 chars, <span id="vseo_description-length"></span> chars left</span>',
 					),
@@ -161,7 +161,7 @@ class VSEO_Metabox {
 			'social' => array(
 				'og_title' => array(
 					'display_callback' => 'vseo_field_text',
-					'sanitize_callback' => 'vseo_sanitize_meta_text',
+					'sanitize_callback' => 'sanitize_text_field',
 					'args' => array(
 						'description' => '<span class="description">If you don\'t want to use the post or SEO title for sharing the post on Facebook/Open Graph but want another title there, write it here.</span>',
 					),
@@ -169,7 +169,7 @@ class VSEO_Metabox {
 				),
 				'og_description' => array(
 					'display_callback' => 'vseo_field_textarea',
-					'sanitize_callback' => 'vseo_sanitize_meta_text',
+					'sanitize_callback' => 'sanitize_text_field',
 					'args' => array(
 						'description' => '<span class="description">If you don\'t want to use the meta description for sharing the post on Facebook/Open Graph but want another description there, write it here.</span>',
 					),
@@ -177,7 +177,7 @@ class VSEO_Metabox {
 				),
 				'twitter_title' => array(
 					'display_callback' => 'vseo_field_text',
-					'sanitize_callback' => 'vseo_sanitize_meta_text',
+					'sanitize_callback' => 'sanitize_text_field',
 					'args' => array(
 						'description' => '<span class="description">If you don\'t want to use the post or SEO title for sharing the post on Twitter but want another title there, write it here.</span>',
 					),
@@ -185,7 +185,7 @@ class VSEO_Metabox {
 				),								
 				'twitter_description' => array(
 					'display_callback' => 'vseo_field_textarea',
-					'sanitize_callback' => 'vseo_sanitize_meta_text',
+					'sanitize_callback' => 'sanitize_text_field',
 					'args' => array(
 						'description' => '<span class="description">If you don\'t want to use the meta title for sharing the post on Facebook/Open Graph but want another title there, write it here.</span>',
 					),
@@ -230,7 +230,7 @@ class VSEO_Taxonomy {
 			<input type="text" name="term_meta[title]" id="term_meta[title]" value="">
 			<p class="description"><?php _e( 'Blank for default', 'voce_seo' ); ?></p>
 		</div>
-		<input type="hidden" value="<?php echo $taxonomy; ?>" name="voce_seo_taxonomy">
+		<input type="hidden" value="<?php echo esc_attr( $taxonomy ); ?>" name="voce_seo_taxonomy">
 		<?php
 		wp_nonce_field( 'voce_seo_term', 'voce_seo_term' );
 	}
@@ -245,7 +245,7 @@ class VSEO_Taxonomy {
 				<input type="text" name="term_meta[title]" id="term_meta[title]" value="<?php echo isset( $term_meta[ $taxonomy . '_' . $term_id ]['title'] ) ? esc_attr( $term_meta[ $taxonomy . '_' . $term_id ]['title'] ) : ''; ?>">
 			</td>
 		</tr>
-		<input type="hidden" value="<?php echo $taxonomy; ?>" name="voce_seo_taxonomy">
+		<input type="hidden" value="<?php echo esc_attr( $taxonomy ); ?>" name="voce_seo_taxonomy">
 		<?php
 		wp_nonce_field( 'voce_seo_term', 'voce_seo_term' );
 	}
@@ -263,7 +263,7 @@ class VSEO_Taxonomy {
 			$meta_data = array();
 			foreach ( $cat_keys as $key ) {
 				if ( isset( $_POST['term_meta'][$key] ) ) {
-					$meta_data[$key] = $_POST['term_meta'][$key];
+					$meta_data[$key] = sanitize_text_field( $_POST['term_meta'][$key] );
 				}
 			}
 			$term_meta[ $taxonomy . '_' . $term_id ] = $meta_data;
