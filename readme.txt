@@ -3,7 +3,7 @@ Contributors: voceplatforms, prettyboymp
 Tags: SEO
 Requires at least: 3.7.0
 Tested up to: 3.9
-Stable tag: 0.3.2
+Stable tag: 0.3.3
 License: GPLv2 or later
 
 An SEO plugin taking things from both WP SEO and All in One SEO but leaving out the VIP incompatible pieces.
@@ -14,6 +14,9 @@ Adds filterable SEO and Social fields to all publicly queryable post types and a
 to improve discoverability.
 
 == Changelog ==
+
+= Version 0.3.3 =
+* Escape output. Sanitize input. Remove `vseo_sanitize_meta_text()` and replace callbacks to it with `sanitize_text_field()`
 
 = Version 0.3.2 =
 * Change file permissions to remove execute and write
