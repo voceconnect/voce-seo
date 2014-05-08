@@ -149,14 +149,6 @@ class VSEO_Metabox {
 					),
 					'title' => 'Canonical URL',
 				),
-				'redirect' => array(
-					'display_callback' => 'vseo_field_text',
-					'sanitize_callback' => 'vseo_sanitize_url',
-					'args' => array(
-						'description' => '<span class="description">The URL that this page should redirect to.</span>',
-					),
-					'title' => '301 Redirect URL',
-				),
 			),
 			'social' => array(
 				'og_title' => array(
