@@ -2,8 +2,8 @@
 Contributors: voceplatforms, prettyboymp
 Tags: SEO
 Requires at least: 3.7.0
-Tested up to: 3.9
-Stable tag: 0.3.3
+Tested up to: 3.9.1
+Stable tag: 0.3.4
 License: GPLv2 or later
 
 An SEO plugin taking things from both WP SEO and All in One SEO but leaving out the VIP incompatible pieces.
@@ -15,6 +15,9 @@ to improve discoverability.
 
 == Changelog ==
 
+= Version 0.3.4 =
+* Remove 301 Redirect meta element, which was deprecated
+
 = Version 0.3.3 =
 * Escape output. Sanitize input. Remove `vseo_sanitize_meta_text()` and replace callbacks to it with `sanitize_text_field()`
 
@@ -24,7 +27,6 @@ to improve discoverability.
 = Version 0.3.1 =
 * Set image to full size for og:image
 * Use og:description on homepage
-
 
 = Version 0.3.0 =
 * Adding ability to set separate Facebook, Twitter and SEO title
