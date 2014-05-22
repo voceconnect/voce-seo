@@ -55,7 +55,7 @@ if ( !function_exists( 'vseo_field_select' ) ) {
 				$html .= wp_kses_post( (string) $args['description'] );
 		}
 		$html = '<br/>'.$html;
-		
+
 		return $html;
 	}
 

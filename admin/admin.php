@@ -174,7 +174,7 @@ class VSEO_Metabox {
 						'description' => '<span class="description">If you don\'t want to use the post or SEO title for sharing the post on Twitter but want another title there, write it here.</span>',
 					),
 					'title' => 'Twitter Title',
-				),								
+				),
 				'twitter_description' => array(
 					'display_callback' => 'vseo_field_textarea',
 					'sanitize_callback' => 'sanitize_text_field',
@@ -202,7 +202,7 @@ class VSEO_Metabox {
 }
 
 class VSEO_Taxonomy {
-	
+
 	public static $option_key = 'vseo_term_meta';
 
 	public static function init() {
@@ -249,7 +249,7 @@ class VSEO_Taxonomy {
 		) {
 			$_POST = array_map( 'stripslashes_deep', $_POST ); //prevent escaping from option value http://codex.wordpress.org/Function_Reference/stripslashes_deep
 			$taxonomy = $_POST['voce_seo_taxonomy'];
-			
+
 			$term_meta = get_option( self::$option_key );
 			$cat_keys = array_keys( $_POST['term_meta'] );
 			$meta_data = array();

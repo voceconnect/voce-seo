@@ -10,8 +10,25 @@ An SEO plugin taking things from both WP SEO and All in One SEO but leaving out 
 
 == Description ==
 
-Adds filterable SEO and Social fields to all publicly queryable post types and applies them to the header of the site
-to improve discoverability.
+Adds filterable SEO and Social fields to all publicly queryable post types and applies them to the header of the site to improve discoverability.
+
+== Installation ==
+
+1. Install the Voce Seo plugin folder directly into the `wp-content/plugins/` directory.
+1. Activate the plugin via the `Plugins` menu in the WordPress admin.
+
+== Installation ==
+
+=== As standard plugin: ===
+> See [Installing Plugins](http://codex.wordpress.org/Managing_Plugins#Installing_Plugins).
+
+=== As theme or plugin dependency: ===
+> After dropping the plugin into the containing theme or plugin, add the following:
+```php
+if( ! class_exists( 'VSEO' ) ) {
+    require_once( $path_to_voce_seo . '/voce-seo.php' );
+}
+```
 
 == Changelog ==
 
@@ -64,8 +81,3 @@ to improve discoverability.
 
 = Version 0.1.0 =
 * Initial release
-
-== Installation ==
-
-1. Install the Voce Seo plugin folder directly into the `wp-content/plugins/` directory.
-1. Activate the plugin via the `Plugins` menu in the WordPress admin.
