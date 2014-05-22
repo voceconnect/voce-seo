@@ -1,11 +1,11 @@
 Voce SEO
 ==================
 
-Contributors: voceplatforms, prettyboymp
-Tags: SEO
-Requires at least: 3.7.0
-Tested up to: 3.9.1
-Stable tag: 0.3.4
+Contributors: voceplatforms, prettyboymp  
+Tags: SEO  
+Requires at least: 3.7.0  
+Tested up to: 3.9.1  
+Stable tag: 0.3.4  
 License: GPLv2 or later
 
 An SEO plugin taking things from both WP SEO and All in One SEO but leaving out the VIP incompatible pieces.
