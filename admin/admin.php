@@ -60,7 +60,7 @@ class VSEO_Metabox {
 		if ( wp_is_post_autosave( $post_id ) || wp_is_post_revision( $post_id ) ) {
 			return $post_id;
 		}
-		if ( isset( $_REQUEST['vseo_nonce'] ) && wp_verify_nonce( $_REQUEST['vseo_nonce'], 'vseo_update_meta' ) ) {
+		if ( isset( $_POST['vseo_nonce'] ) && wp_verify_nonce( $_POST['vseo_nonce'], 'vseo_update_meta' ) ) {
 			$post_type = get_post_type( $post_id );
 			$tabs = self::get_metabox_tabs( $post_type );
 			$vseo_meta = ( array ) get_post_meta( $post_id, 'vseo_meta', true );
@@ -69,7 +69,7 @@ class VSEO_Metabox {
 				foreach ( self::get_metabox_fields( $tab_id, $post_type ) as $field_id => $field ) {
 					if ( isset( $field['sanitize_callback'] ) ) {
 						$vseo_meta[$field_id] = call_user_func_array( $field['sanitize_callback'], array(
-							isset( $_REQUEST['vseo' . $field_id] ) ? $_REQUEST['vseo' . $field_id] : null,
+							isset( $_POST['vseo' . $field_id] ) ? $_POST['vseo' . $field_id] : null,
 							$field['args']
 								) );
 					}
