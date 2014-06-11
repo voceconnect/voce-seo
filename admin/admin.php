@@ -218,9 +218,9 @@ class VSEO_Taxonomy {
 	public static function add_new_meta_field( $taxonomy ) {
 		?>
 		<div class="form-field">
-			<label for="term_meta[title]"><?php _e( 'SEO title', 'voce_seo' ); ?></label>
+			<label for="term_meta[title]"><?php esc_html_e( 'SEO title', 'voce_seo' ); ?></label>
 			<input type="text" name="term_meta[title]" id="term_meta[title]" value="">
-			<p class="description"><?php _e( 'Blank for default', 'voce_seo' ); ?></p>
+			<p class="description"><?php esc_html_e( 'Blank for default', 'voce_seo' ); ?></p>
 		</div>
 		<input type="hidden" value="<?php echo esc_attr( $taxonomy ); ?>" name="voce_seo_taxonomy">
 		<?php
@@ -232,7 +232,7 @@ class VSEO_Taxonomy {
 		$term_meta = get_option( self::$option_key );
 		?>
 		<tr class="form-field">
-			<th scope="row" valign="top"><label for="term_meta[title]"><?php _e( 'SEO Title', 'voce_seo' ); ?></label></th>
+			<th scope="row" valign="top"><label for="term_meta[title]"><?php esc_html_e( 'SEO Title', 'voce_seo' ); ?></label></th>
 			<td>
 				<input type="text" name="term_meta[title]" id="term_meta[title]" value="<?php echo isset( $term_meta[ $taxonomy . '_' . $term_id ]['title'] ) ? esc_attr( $term_meta[ $taxonomy . '_' . $term_id ]['title'] ) : ''; ?>">
 			</td>
