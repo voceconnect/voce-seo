@@ -1,7 +1,6 @@
 {
     "name": "voce-seo",
     "description": "Voce SEO Plugin",
-    "version": "0.3.8",
     "repository": {
         "type": "git",
         "url": "git@github.com:voceconnect/voce-seo.git"
