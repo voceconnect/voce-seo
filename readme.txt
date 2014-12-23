@@ -35,6 +35,7 @@ if( ! class_exists( 'VSEO' ) ) {
 = Version 0.4.0 =
 * Testing with WordPress 4.1
 * Removing build files
+* Updating dependencies
 
 = Version 0.3.9
 * Only add meta box if post_type_object is valid
