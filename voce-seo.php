@@ -1,7 +1,7 @@
 <?php
 /*
   Plugin Name: Voce SEO
-  Version: 0.3.9
+  Version: 0.4.0
   Plugin URI: http://voceconnect.com/
   Description: An SEO plugin taking things from both WP SEO and All in One SEO but leaving out the VIP incompatible pieces.
   Author: Voce Platforms
@@ -112,10 +112,10 @@ class VSEO {
 
 		return $title;
 	}
-		
+
 	private static function get_term_seo_title(){
 		$queried_object = get_queried_object();
-		$term_id = $queried_object->term_id; 
+		$term_id = $queried_object->term_id;
 		$taxonomy = $queried_object->taxonomy;
 		$option_key = $taxonomy . '_' . $term_id;
 		$term_meta = get_option( 'vseo_term_meta' );
@@ -318,11 +318,11 @@ class VSEO {
 			}
 		} else {
 			if ( is_tax() || is_category() || is_tag() ) {
-					$queried_object = get_queried_object();  
-					$term_id = $queried_object->term_id; 
+					$queried_object = get_queried_object();
+					$term_id = $queried_object->term_id;
 					$taxonomy = $queried_object->taxonomy;
 					$description = term_description( $term_id, $taxonomy );
-					
+
 			} elseif ( is_search() ) {
 					$description = '';
 			} else {
