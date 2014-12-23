@@ -37,19 +37,19 @@ if( ! class_exists( 'VSEO' ) ) {
 * Removing build files
 * Updating dependencies
 
-= Version 0.3.9
+= Version 0.3.9 =
 * Only add meta box if post_type_object is valid
 
-= Version 0.3.8
+= Version 0.3.8 =
 * Escape translated strings.
 
-= Version 0.3.7
+= Version 0.3.7 =
 * Don't use `$_REQUEST`, be explicit.
 
-= Version 0.3.6
+= Version 0.3.6 =
 * Add `vseo_twitterimage` filter to filter the twitter:image property.
 
-= Version 0.3.5
+= Version 0.3.5 =
 * No change. Syncing with wordpress.org version bump needed for SVN permissions fix.
 
 = Version 0.3.4 =
