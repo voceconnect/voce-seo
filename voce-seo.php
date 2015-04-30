@@ -155,6 +155,7 @@ class VSEO {
 						}
 					}
 				}
+				update_option( 'vseo_term_meta', $updated_term_meta );
 			}
 		}
 
