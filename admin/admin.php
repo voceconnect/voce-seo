@@ -214,6 +214,7 @@ class VSEO_Taxonomy {
 			add_action( 'edited_' . $taxonomy, array( __CLASS__, 'save_meta' ), 10, 2 );
 			add_action( 'create_' . $taxonomy, array( __CLASS__, 'save_meta' ), 10, 2 );
 		}
+		add_action( 'split_shared_term', array( __CLASS__, 'term_split_handling' ), 10, 4 );
 	}
 
 	public static function add_new_meta_field( $taxonomy ) {
@@ -261,6 +262,23 @@ class VSEO_Taxonomy {
 			}
 			$term_meta[ $taxonomy . '_' . $term_id ] = $meta_data;
 			update_option( self::$option_key, $term_meta );
+		}
+	}
+
+	/**
+	 * Handling the splitting of terms with WordPress 4.2
+	 * @param type $old_term_id
+	 * @param type $new_term_id
+	 * @param type $term_taxonomy_id
+	 * @param type $taxonomy
+	 */
+	public static function term_split_handling( $old_term_id, $new_term_id, $term_taxonomy_id, $taxonomy ) {
+		$vseo_term_meta = get_option( self::$option_key );
+
+		if ( isset( $vseo_term_meta[$taxonomy . '_' . $old_term_id] ) ) {
+			$vseo_term_meta[$taxonomy . '_' . $new_term_id] = $vseo_term_meta[$taxonomy . '_' . $old_term_id];
+			unset( $vseo_term_meta[$taxonomy . '_' . $old_term_id] );
+			update_option( self::$option_key, $vseo_term_meta );
 		}
 	}
 

@@ -1,7 +1,7 @@
 <?php
 /*
   Plugin Name: Voce SEO
-  Version: 0.4.0
+  Version: 0.5.0
   Plugin URI: http://voceconnect.com/
   Description: An SEO plugin taking things from both WP SEO and All in One SEO but leaving out the VIP incompatible pieces.
   Author: Voce Platforms
@@ -10,7 +10,7 @@
 
 class VSEO {
 
-	const DB_VERSION = '0.1.1';
+	const DB_VERSION = '0.2';
 
 	public static function init() {
 
@@ -138,6 +138,25 @@ class VSEO {
 		if($db_version < 0.1) {
 			Voce_Settings_API::GetInstance()->set_setting('robots-nodp', 'vseo-general', true);
 			Voce_Settings_API::GetInstance()->set_setting('robots-noydir', 'vseo-general', true);
+		}
+
+		if ( $db_version < 0.2 && function_exists( 'wp_get_split_term' ) ) {
+			$term_meta = $updated_term_meta = get_option( 'vseo_term_meta' );
+			if ( is_array( $term_meta ) ) {
+				foreach( $term_meta as $taxonomy_term => $term_data ) {
+					$tax_term_arr = explode( '_', $taxonomy_term );
+					if ( is_array( $tax_term_arr ) && !empty( $tax_term_arr ) ) {
+						$term_id  = array_pop( $tax_term_arr );
+						$taxonomy = implode( '_', $tax_term_arr );
+						$new_term_id = wp_get_split_term( $term_id, $taxonomy );
+						if ( $new_term_id !== false ) {
+							unset( $updated_term_meta[$taxonomy_term] );
+							$updated_term_meta[sprintf( '%s_%s', $taxonomy, $new_term_id )] = $term_data;
+						}
+					}
+				}
+				update_option( 'vseo_term_meta', $updated_term_meta );
+			}
 		}
 
 		update_option('VSEO_Version', self::DB_VERSION);
