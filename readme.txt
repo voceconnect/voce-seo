@@ -32,7 +32,7 @@ if( ! class_exists( 'VSEO' ) ) {
 
 == Changelog ==
 
-= Version 0.5 =
+= Version 0.5.0 =
 * Testing with WordPress 4.2.1
 * Adding handling to vseo meta for term splitting
 
