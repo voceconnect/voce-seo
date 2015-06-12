@@ -12,6 +12,6 @@
         "vendor-dir": "vendor"
     },
     "require": {
-        "voceconnect/voce-settings-api": "~0.5.0"
+        "voceconnect/voce-settings-api": "~0.5.2"
     }
 }
