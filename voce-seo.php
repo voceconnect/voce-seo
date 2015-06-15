@@ -226,8 +226,14 @@ class VSEO {
 	}
 
 	public static function output_meta_objects_html( $meta_objects = array() ) {
+
+		$allowed_tags = array(
+			'meta' => array(),
+			'link' => array(),
+		);
+
 		foreach( $meta_objects as $meta_object => $properties ) {
-			if ( !isset( $properties['type'] ) )
+			if ( !isset( $properties['type'] ) || !isset( $allowed_tags[$properties['type']] ) )
 				continue;
 
 			$attributes = '';
