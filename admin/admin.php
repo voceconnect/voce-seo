@@ -15,7 +15,7 @@ class VSEO_Metabox {
 	public static function init() {
 		add_action( 'add_meta_boxes', function($post_type) {
 			$post_type_object = get_post_type_object( $post_type );
-			if ( $post_type_object && $post_type_object->publicly_queryable || $post_type == 'page' ) {
+			if ( $post_type_object && $post_type_object->publicly_queryable || $post_type === 'page' ) {
 				add_meta_box( 'vseo_meta', 'SEO Settings', array( 'VSEO_Metabox', 'meta_box' ), $post_type, 'advanced' );
 			}
 		}, 99 );

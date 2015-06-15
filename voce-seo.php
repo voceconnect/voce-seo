@@ -100,7 +100,7 @@ class VSEO {
 				$prefix = " $sep ";
 
 			// Determines position of the separator and direction of the breadcrumb
-			if ( 'right' == $seplocation ) { // sep on right, so reverse the order
+			if ( 'right' === $seplocation ) { // sep on right, so reverse the order
 				$title_array = explode( $t_sep, $title );
 				$title_array = array_reverse( $title_array );
 				$title = implode( " $sep ", $title_array ) . $prefix;
@@ -348,7 +348,7 @@ class VSEO {
 				$description = strip_tags($description);
 				$max = 250;
 				if ($max < strlen($description)) {
-					while($description[$max] != ' ' && $max > 40) {
+					while($description[$max] !== ' ' && $max > 40) {
 						$max--;
 					}
 				}
@@ -421,7 +421,7 @@ class VSEO {
 
 		$robotsstr = implode(',', $robots );
 
-		if ( $robotsstr != '' ) {
+		if ( $robotsstr !== '' ) {
 			return self::create_meta_object( 'robots', 'meta', array( 'name' => 'robots', 'content' => esc_attr( $robotsstr ) ) );
 		} else {
 			return array();
@@ -447,7 +447,7 @@ class VSEO {
 				$canonical = get_search_link();
 			} else if ( is_front_page() ) {
 				$canonical = home_url( '/' );
-			} else if ( is_home() && 'page' == get_option( 'show_on_front' ) ) {
+			} else if ( is_home() && 'page' === get_option( 'show_on_front' ) ) {
 				$canonical = get_permalink( get_option( 'page_for_posts' ) );
 			} else if ( is_tax() || is_tag() || is_category() ) {
 				if ( function_exists('wpcom_vip_get_term_link') ) {
