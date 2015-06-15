@@ -247,19 +247,18 @@ class VSEO {
 		);
 
 		foreach( $meta_objects as $meta_object => $properties ) {
-			$attributes = '';
-			$element = !empty($properties['type']) ? $properties['type'] : false;
+			$atts_string = '';
+			$element     = !empty($properties['type']) ? $properties['type'] : false;
+			$attributes  = !empty($properties['attributes']) ? $properties['attributes'] : false;
 
-			if ( !$element )
-				continue;
+			if ( $element && $attributes && is_array($attributes) ) {
 
-			if ( is_array( $properties['attributes'] ) ) {
-				foreach( $properties['attributes'] as $attribute => $value ) {
-					$attributes .= sprintf( '%s="%s" ', $attribute, $value );
+				foreach( $attributes as $att => $value ) {
+					$atts_string .= sprintf( '%s="%s" ', $att, $value );
 				}
-			}
 
-			$html .= sprintf( '<%s %s/>' . PHP_EOL, $element, $attributes );
+				$html .= sprintf( '<%s %s/>' . PHP_EOL, $element, $atts_string );
+			}
 		}
 
 		echo wp_kses( $html, $allowed_tags );
