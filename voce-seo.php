@@ -227,6 +227,7 @@ class VSEO {
 
 	public static function output_meta_objects_html( $meta_objects = array() ) {
 
+		$html = '';
 		$allowed_tags = array(
 			'meta' => array(
 				'charset' => true,
@@ -258,9 +259,11 @@ class VSEO {
 				}
 			}
 
-			$tag = sprintf( '<%s %s/>' . PHP_EOL, $element, $attributes );
-			echo wp_kses( $tag, $allowed_tags );
+
+			$html .= sprintf( '<%s %s/>' . PHP_EOL, $element, $attributes );
 		}
+
+		echo wp_kses( $html, $allowed_tags );
 	}
 
 	public static function on_wp_head() {
