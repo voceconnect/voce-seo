@@ -450,7 +450,11 @@ class VSEO {
 			} else if ( is_home() && 'page' == get_option( 'show_on_front' ) ) {
 				$canonical = get_permalink( get_option( 'page_for_posts' ) );
 			} else if ( is_tax() || is_tag() || is_category() ) {
-				$canonical = get_term_link( $queried_object, $queried_object->taxonomy );
+				if ( function_exists('wpcom_vip_get_term_link') ) {
+					$canonical = wpcom_vip_get_term_link( $queried_object, $queried_object->taxonomy );
+				} else {
+					$canonical = get_term_link( $queried_object, $queried_object->taxonomy );
+				}
 			} else if ( function_exists( 'get_post_type_archive_link' ) && is_post_type_archive() ) {
 				$canonical = get_post_type_archive_link( get_post_type() );
 			} else if ( is_author() ) {
