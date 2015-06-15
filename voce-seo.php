@@ -228,8 +228,21 @@ class VSEO {
 	public static function output_meta_objects_html( $meta_objects = array() ) {
 
 		$allowed_tags = array(
-			'meta' => array(),
-			'link' => array(),
+			'meta' => array(
+				'charset' => true,
+				'content' => true,
+				'http-equiv' => true,
+				'name' => true
+			),
+			'link' => array(
+				'href' => true,
+				'crossorigin' => true,
+				'rel' => true,
+				'media' => true,
+				'hreflang' => true,
+				'type' => true,
+				'sizes' => true
+			),
 		);
 
 		foreach( $meta_objects as $meta_object => $properties ) {
@@ -241,7 +254,9 @@ class VSEO {
 			$attributes = '';
 			if ( is_array( $properties['attributes'] ) ) {
 				foreach( $properties['attributes'] as $attribute => $value ) {
-					$attributes .= sprintf( '%s="%s" ', $attribute, $value );
+					if ( isset($allowed_tags[$meta_tag][$attribute]) ) {
+						$attributes .= sprintf( '%s="%s" ', $attribute, $value );
+					}
 				}
 			}
 
