@@ -226,7 +226,6 @@ class VSEO {
 	}
 
 	public static function output_meta_objects_html( $meta_objects = array() ) {
-
 		$html = '';
 		$allowed_tags = array(
 			'meta' => array(
