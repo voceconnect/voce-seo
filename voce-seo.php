@@ -233,7 +233,9 @@ class VSEO {
 		);
 
 		foreach( $meta_objects as $meta_object => $properties ) {
-			if ( !isset( $properties['type'] ) || !isset( $allowed_tags[$properties['type']] ) )
+			$meta_tag = !empty($properties['type']) ? $properties['type'] : false;
+
+			if ( !$meta_tag || !isset( $allowed_tags[$meta_tag] ) )
 				continue;
 
 			$attributes = '';
@@ -243,7 +245,7 @@ class VSEO {
 				}
 			}
 
-			printf( '<%s %s/>' . PHP_EOL, $properties['type'], $attributes );
+			printf( '<%s %s/>' . PHP_EOL, $meta_tag, $attributes );
 		}
 	}
 
