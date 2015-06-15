@@ -274,7 +274,7 @@ class VSEO {
 		$meta_objects = self::robots_meta();
 
 		if( $canonical = self::get_canonical_url() ) {
-			$meta_objects = self::create_meta_object( 'canonical', 'link', array( 'rel' => 'canonical', 'content' => esc_url( $canonical ) ), $meta_objects );
+			$meta_objects = self::create_meta_object( 'canonical', 'link', array( 'rel' => 'canonical', 'href' => esc_url( $canonical ) ), $meta_objects );
 		}
 
 		if( $description = self::get_meta_description() ) {
