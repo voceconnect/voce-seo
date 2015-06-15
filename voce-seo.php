@@ -247,18 +247,17 @@ class VSEO {
 		);
 
 		foreach( $meta_objects as $meta_object => $properties ) {
+			$attributes = '';
 			$element = !empty($properties['type']) ? $properties['type'] : false;
 
 			if ( !$element )
 				continue;
 
-			$attributes = '';
 			if ( is_array( $properties['attributes'] ) ) {
 				foreach( $properties['attributes'] as $attribute => $value ) {
 					$attributes .= sprintf( '%s="%s" ', $attribute, $value );
 				}
 			}
-
 
 			$html .= sprintf( '<%s %s/>' . PHP_EOL, $element, $attributes );
 		}
