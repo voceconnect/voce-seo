@@ -248,19 +248,18 @@ class VSEO {
 		foreach( $meta_objects as $meta_object => $properties ) {
 			$element = !empty($properties['type']) ? $properties['type'] : false;
 
-			if ( !$element || !isset( $allowed_tags[$element] ) )
+			if ( !$element )
 				continue;
 
 			$attributes = '';
 			if ( is_array( $properties['attributes'] ) ) {
 				foreach( $properties['attributes'] as $attribute => $value ) {
-					if ( isset($allowed_tags[$element][$attribute]) ) {
-						$attributes .= sprintf( '%s="%s" ', $attribute, $value );
-					}
+					$attributes .= sprintf( '%s="%s" ', $attribute, $value );
 				}
 			}
 
-			printf( '<%s %s/>' . PHP_EOL, $element, $attributes );
+			$tag = sprintf( '<%s %s/>' . PHP_EOL, $element, $attributes );
+			echo wp_kses( $tag, $allowed_tags );
 		}
 	}
 
