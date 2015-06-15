@@ -236,7 +236,6 @@ class VSEO {
 			),
 			'link' => array(
 				'href' => true,
-				'crossorigin' => true,
 				'rel' => true,
 				'media' => true,
 				'hreflang' => true,
