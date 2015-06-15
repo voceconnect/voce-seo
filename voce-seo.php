@@ -232,7 +232,8 @@ class VSEO {
 				'charset' => true,
 				'content' => true,
 				'http-equiv' => true,
-				'name' => true
+				'name' => true,
+				'property' => true
 			),
 			'link' => array(
 				'href' => true,
