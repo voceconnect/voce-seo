@@ -31,6 +31,10 @@ if( ! class_exists( 'VSEO' ) ) {
 ```
 
 == Changelog ==
+= Version 0.5.2 =
+* Strict comparisons
+* Escaping
+* Meta output validation
 
 = Version 0.5.0 =
 * Testing with WordPress 4.2.1
