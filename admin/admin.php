@@ -37,7 +37,7 @@ class VSEO_Metabox {
 				?>
 			</ul>
 			<?php foreach ( $tabs as $tab_id => $tab ) : ?>
-				<div class="vseotab" id="vseo-<?php echo $tab_id ?>">
+				<div class="vseotab" id="vseo-<?php echo esc_attr($tab_id); ?>">
 					<?php foreach ( self::get_metabox_fields( $tab_id, $post_type ) as $field_id => $field ): ?>
 						<p>
 							<label><?php echo esc_html( $field['title'] ); ?></label>
