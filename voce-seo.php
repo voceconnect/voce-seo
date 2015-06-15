@@ -246,21 +246,21 @@ class VSEO {
 		);
 
 		foreach( $meta_objects as $meta_object => $properties ) {
-			$meta_tag = !empty($properties['type']) ? $properties['type'] : false;
+			$element = !empty($properties['type']) ? $properties['type'] : false;
 
-			if ( !$meta_tag || !isset( $allowed_tags[$meta_tag] ) )
+			if ( !$element || !isset( $allowed_tags[$element] ) )
 				continue;
 
 			$attributes = '';
 			if ( is_array( $properties['attributes'] ) ) {
 				foreach( $properties['attributes'] as $attribute => $value ) {
-					if ( isset($allowed_tags[$meta_tag][$attribute]) ) {
+					if ( isset($allowed_tags[$element][$attribute]) ) {
 						$attributes .= sprintf( '%s="%s" ', $attribute, $value );
 					}
 				}
 			}
 
-			printf( '<%s %s/>' . PHP_EOL, $meta_tag, $attributes );
+			printf( '<%s %s/>' . PHP_EOL, $element, $attributes );
 		}
 	}
 
