@@ -1,7 +1,7 @@
 <?php
 /*
   Plugin Name: Voce SEO
-  Version: 0.5.1
+  Version: 0.5.2
   Plugin URI: http://voceconnect.com/
   Description: An SEO plugin taking things from both WP SEO and All in One SEO but leaving out the VIP incompatible pieces.
   Author: Voce Platforms
@@ -100,7 +100,7 @@ class VSEO {
 				$prefix = " $sep ";
 
 			// Determines position of the separator and direction of the breadcrumb
-			if ( 'right' == $seplocation ) { // sep on right, so reverse the order
+			if ( 'right' === $seplocation ) { // sep on right, so reverse the order
 				$title_array = explode( $t_sep, $title );
 				$title_array = array_reverse( $title_array );
 				$title = implode( " $sep ", $title_array ) . $prefix;
@@ -226,19 +226,41 @@ class VSEO {
 	}
 
 	public static function output_meta_objects_html( $meta_objects = array() ) {
+		$html = '';
+		$allowed_tags = array(
+			'meta' => array(
+				'charset' => true,
+				'content' => true,
+				'http-equiv' => true,
+				'name' => true,
+				'property' => true
+			),
+			'link' => array(
+				'href' => true,
+				'rel' => true,
+				'media' => true,
+				'hreflang' => true,
+				'type' => true,
+				'sizes' => true
+			),
+		);
+
 		foreach( $meta_objects as $meta_object => $properties ) {
-			if ( !isset( $properties['type'] ) )
-				continue;
+			$atts_string = '';
+			$element     = !empty($properties['type']) ? $properties['type'] : false;
+			$attributes  = !empty($properties['attributes']) ? $properties['attributes'] : false;
 
-			$attributes = '';
-			if ( is_array( $properties['attributes'] ) ) {
-				foreach( $properties['attributes'] as $attribute => $value ) {
-					$attributes .= sprintf( '%s="%s" ', $attribute, $value );
+			if ( $element && $attributes && is_array($attributes) ) {
+
+				foreach( $attributes as $att => $value ) {
+					$atts_string .= sprintf( '%s="%s" ', $att, $value );
 				}
-			}
 
-			printf( '<%s %s/>' . PHP_EOL, $properties['type'], $attributes );
+				$html .= sprintf( '<%s %s/>' . PHP_EOL, $element, $atts_string );
+			}
 		}
+
+		echo wp_kses( $html, $allowed_tags );
 	}
 
 	public static function on_wp_head() {
@@ -251,7 +273,7 @@ class VSEO {
 		$meta_objects = self::robots_meta();
 
 		if( $canonical = self::get_canonical_url() ) {
-			$meta_objects = self::create_meta_object( 'canonical', 'link', array( 'rel' => 'canonical', 'content' => esc_url( $canonical ) ), $meta_objects );
+			$meta_objects = self::create_meta_object( 'canonical', 'link', array( 'rel' => 'canonical', 'href' => esc_url( $canonical ) ), $meta_objects );
 		}
 
 		if( $description = self::get_meta_description() ) {
@@ -326,7 +348,7 @@ class VSEO {
 				$description = strip_tags($description);
 				$max = 250;
 				if ($max < strlen($description)) {
-					while($description[$max] != ' ' && $max > 40) {
+					while($description[$max] !== ' ' && $max > 40) {
 						$max--;
 					}
 				}
@@ -399,7 +421,7 @@ class VSEO {
 
 		$robotsstr = implode(',', $robots );
 
-		if ( $robotsstr != '' ) {
+		if ( $robotsstr !== '' ) {
 			return self::create_meta_object( 'robots', 'meta', array( 'name' => 'robots', 'content' => esc_attr( $robotsstr ) ) );
 		} else {
 			return array();
@@ -425,10 +447,14 @@ class VSEO {
 				$canonical = get_search_link();
 			} else if ( is_front_page() ) {
 				$canonical = home_url( '/' );
-			} else if ( is_home() && 'page' == get_option( 'show_on_front' ) ) {
+			} else if ( is_home() && 'page' === get_option( 'show_on_front' ) ) {
 				$canonical = get_permalink( get_option( 'page_for_posts' ) );
 			} else if ( is_tax() || is_tag() || is_category() ) {
-				$canonical = get_term_link( $queried_object, $queried_object->taxonomy );
+				if ( function_exists('wpcom_vip_get_term_link') ) {
+					$canonical = wpcom_vip_get_term_link( $queried_object, $queried_object->taxonomy );
+				} else {
+					$canonical = get_term_link( $queried_object, $queried_object->taxonomy );
+				}
 			} else if ( function_exists( 'get_post_type_archive_link' ) && is_post_type_archive() ) {
 				$canonical = get_post_type_archive_link( get_post_type() );
 			} else if ( is_author() ) {

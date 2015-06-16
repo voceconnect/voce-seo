@@ -15,7 +15,7 @@ class VSEO_Metabox {
 	public static function init() {
 		add_action( 'add_meta_boxes', function($post_type) {
 			$post_type_object = get_post_type_object( $post_type );
-			if ( $post_type_object && $post_type_object->publicly_queryable || $post_type == 'page' ) {
+			if ( $post_type_object && $post_type_object->publicly_queryable || $post_type === 'page' ) {
 				add_meta_box( 'vseo_meta', 'SEO Settings', array( 'VSEO_Metabox', 'meta_box' ), $post_type, 'advanced' );
 			}
 		}, 99 );
@@ -37,7 +37,7 @@ class VSEO_Metabox {
 				?>
 			</ul>
 			<?php foreach ( $tabs as $tab_id => $tab ) : ?>
-				<div class="vseotab" id="vseo-<?php echo $tab_id ?>">
+				<div class="vseotab" id="vseo-<?php echo esc_attr($tab_id); ?>">
 					<?php foreach ( self::get_metabox_fields( $tab_id, $post_type ) as $field_id => $field ): ?>
 						<p>
 							<label><?php echo esc_html( $field['title'] ); ?></label>
