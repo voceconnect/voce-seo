@@ -253,7 +253,7 @@ class VSEO {
 			if ( $element && $attributes && is_array($attributes) ) {
 
 				foreach( $attributes as $att => $value ) {
-					$atts_string .= sprintf( '%s="%s" ', $att, $value );
+					$atts_string .= sprintf( '%s="%s" ', $att, esc_attr( $value ) );
 				}
 
 				$html .= sprintf( '<%s %s/>' . PHP_EOL, $element, $atts_string );
