@@ -1,7 +1,7 @@
 <?php
 /*
   Plugin Name: Voce SEO
-  Version: 0.5.3
+  Version: 0.5.4
   Plugin URI: http://voceconnect.com/
   Description: An SEO plugin taking things from both WP SEO and All in One SEO but leaving out the VIP incompatible pieces.
   Author: Voce Platforms
@@ -327,8 +327,9 @@ class VSEO {
 		if(!$post_id) $post_id = get_the_ID ( );
 
 		$vseo_meta = (array) get_post_meta($post_id, 'vseo_meta', true);
+		$value = isset($vseo_meta[$key]) ? $vseo_meta[$key] : null;
 
-		return isset($vseo_meta[$key]) ? $vseo_meta[$key] : null;
+		return apply_filters( 'get_vseo_meta', $value, $key, $post_id );
 	}
 
 	public static function get_meta_description() {
