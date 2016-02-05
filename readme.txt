@@ -32,7 +32,7 @@ if( ! class_exists( 'VSEO' ) ) {
 
 == Changelog ==
 = Version 0.6.0 =
-* Adding more flexibile support for other single post types
+* Adding more flexible support for other single post types
 * Adding keywords support.
 
 = Version 0.5.4 =
