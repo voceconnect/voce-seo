@@ -2,7 +2,7 @@
 
 /*
   Plugin Name: Voce SEO
-  Version: 0.6.0
+  Version: 0.6.1
   Plugin URI: http://voceconnect.com/
   Description: An SEO plugin taking things from both WP SEO and All in One SEO but leaving out the VIP incompatible pieces.
   Author: Voce Platforms
@@ -534,7 +534,7 @@ class VSEO {
 		return apply_filters( 'vseo_meta_image', $img );
 	}
 
-	private function is_singular_viewable_post_query() {
+	private static function is_singular_viewable_post_query() {
 		$queried_object = get_queried_object();
 		if( is_a( $queried_object, 'WP_Post' ) ) {
 			$post_type_object = get_post_type_object( get_post_type( $queried_object ) );
