@@ -3,7 +3,7 @@ Contributors: voceplatforms, prettyboymp, matstars, kevinlangleyjr
 Tags: SEO
 Requires at least: 3.7.0
 Tested up to: 4.2.4
-Stable tag: 0.6.1
+Stable tag: 0.6.2
 License: GPLv2 or later
 
 An SEO plugin taking things from both WP SEO and All in One SEO but leaving out the VIP incompatible pieces.
@@ -31,6 +31,9 @@ if( ! class_exists( 'VSEO' ) ) {
 ```
 
 == Changelog ==
+= Version 0.6.2 =
+* Removing usage of grunt-voce-plugins in favor of the individually used node modules
+
 = Version 0.6.1 =
 * Fixing non-static method deprecated notice
 
