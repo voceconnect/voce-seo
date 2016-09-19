@@ -1,5 +1,5 @@
 === Voce SEO ===
-Contributors: voceplatforms, prettyboymp, matstars, kevinlangleyjr
+Contributors: voceplatforms, prettyboymp, matstars, kevinlangleyjr, smccafferty
 Tags: SEO
 Requires at least: 3.7.0
 Tested up to: 4.2.4
