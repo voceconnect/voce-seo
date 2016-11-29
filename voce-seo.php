@@ -2,7 +2,7 @@
 
 /*
   Plugin Name: Voce SEO
-  Version: 0.6.2
+  Version: 0.6.3
   Plugin URI: http://voceconnect.com/
   Description: An SEO plugin taking things from both WP SEO and All in One SEO but leaving out the VIP incompatible pieces.
   Author: Voce Platforms
