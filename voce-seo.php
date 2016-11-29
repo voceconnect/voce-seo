@@ -15,7 +15,9 @@ class VSEO {
 
 	public static function init() {
 
-		@include( dirname( __FILE__ ) . '/vendor/autoload.php' );
+		if ( true === file_exists( dirname(__FILE__) . '/vendor/autoload.php' ) ) {
+			include( dirname( __FILE__ ) . '/vendor/autoload.php' );
+		}
 
 		self::upgrade_check();
 
